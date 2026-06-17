@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portail QRM — PHARJ304</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070a13;
+    --panel: #0f1524;
+    --panel-hover: #161e33;
+    --line: #223147;
+    --teal: #3ddbd9;
+    --teal-glow: rgba(61, 219, 217, 0.15);
+    --indigo: #6366f1;
+    --indigo-glow: rgba(99, 102, 241, 0.15);
+    --text: #f3f4f6;
+    --text-dim: #9ca3af;
+    --sans: 'Inter', sans-serif;
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; height: 100%; }
+  body {
+    background: radial-gradient(circle at 50% 0%, #162238 0%, var(--bg) 70%) fixed;
+    color: var(--text);
+    font-family: var(--sans);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .container {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 60px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-family: var(--mono);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .container {
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 34px;
+    }
+  }
+
+  .card {
+    background: rgba(15, 21, 36, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 35px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    opacity: 0.8;
+    transition: all 0.3s;
+  }
+
+  .card.card-teal::before {
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+  }
+
+  .card.card-indigo::before {
+    background: linear-gradient(90deg, #4f46e5, var(--indigo));
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: #384e6e;
+    background: rgba(22, 30, 51, 0.85);
+  }
+
+  .card.card-teal:hover {
+    box-shadow: 0 15px 35px var(--teal-glow);
+  }
+
+  .card.card-indigo:hover {
+    box-shadow: 0 15px 35px var(--indigo-glow);
+  }
+
+  .card-header {
+    margin-bottom: 25px;
+  }
+
+  .card-eyebrow {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .card-stats {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    border-top: 1px dashed var(--line);
+    padding-top: 15px;
+  }
+
+  .stat {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .stat-val {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .card-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--mono);
+    margin-top: 35px;
+    transition: gap 0.2s;
+  }
+
+  .card-teal .card-action { color: var(--teal); }
+  .card-indigo .card-action { color: var(--indigo); }
+
+  .card:hover .card-action {
+    gap: 12px;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 20px;
+    text-align: center;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    background: rgba(7, 10, 19, 0.95);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <div class="eyebrow">Université Libre de Bruxelles</div>
+    <h1>PHARJ304 — Étude des Médicaments</h1>
+    <div class="subtitle">Sélectionnez le module de révision pour lancer votre entraînement QRM interactif.</div>
+  </div>
+
+  <div class="grid">
+    <a href="QRM_Inorganique_PHARJ304.html" class="card card-teal">
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-eyebrow">Module Chimie Minérale</div>
+          <h2 class="card-title">Chimie Inorganique</h2>
+          <p class="card-desc">Accédez aux questions des examens de Juin 2025 et Août 2024 ainsi qu'aux exercices d'appariement et de textes à trous.</p>
+        </div>
+        <div class="card-stats">
+          <div class="stat">Questions : <span class="stat-val">70 QCM</span></div>
+          <div class="stat">Exercices : <span class="stat-val">9 Ex</span></div>
+        </div>
+      </div>
+      <div class="card-action">
+        Lancer l'entraînement 
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </div>
+    </a>
+
+    <a href="QRM_Radiopharmacie_PHARJ304.html" class="card card-indigo">
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-eyebrow">Module Radio-isotopes</div>
+          <h2 class="card-title">Radiopharmacie</h2>
+          <p class="card-desc">Entraînez-vous sur le QRM complet de Radiopharmacie de la 2ème session 2023/2024.</p>
+        </div>
+        <div class="card-stats">
+          <div class="stat">Questions : <span class="stat-val">26 QCM</span></div>
+        </div>
+      </div>
+      <div class="card-action">
+        Lancer l'entraînement 
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  PHARJ304 — Faculté de Pharmacie — ULB
+</footer>
+
+</body>
+</html>

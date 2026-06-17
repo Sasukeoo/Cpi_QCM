@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRM Radiopharmacie — PHARJ304</title>
+<style>
+  :root{
+    --bg: #0c1117;
+    --panel: #141b24;
+    --panel-2: #1a2330;
+    --line: #26323f;
+    --teal: #3ddbd9;
+    --teal-dim: #1f7a78;
+    --amber: #f2b84b;
+    --good: #4ade80;
+    --bad: #f87171;
+    --text: #e8edf2;
+    --text-dim: #8a9aa8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --mono: "SF Mono", "IBM Plex Mono", Menlo, Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(circle at 20% -10%, #15202b 0%, var(--bg) 55%) fixed;
+    color: var(--text);
+    font-family: var(--mono);
+    line-height:1.5;
+    padding: 0 0 80px 0;
+  }
+  .header{
+    background: rgba(12,17,23,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 18px 12px;
+  }
+  .eyebrow{
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 4px;
+  }
+  h1{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 8px 0;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+  .meta{
+    font-size: 12px; color: var(--text-dim); margin-bottom: 10px;
+  }
+  .progress-wrap{
+    display:flex; align-items:center; gap:10px;
+  }
+  .progress-track{
+    flex:1; height: 6px; border-radius: 3px;
+    background: var(--panel-2);
+    overflow:hidden;
+    border: 1px solid var(--line);
+  }
+  .progress-fill{
+    height:100%;
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+    width:0%;
+    transition: width .3s ease;
+  }
+  .progress-label{
+    font-size: 12px; color: var(--text-dim); white-space:nowrap; min-width: 64px; text-align:right;
+  }
+  .container{max-width: 720px; margin: 0 auto; padding: 18px 16px;}
+
+  .qcard{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 16px 14px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .qcard.unanswered::before{
+    content:"";
+    position:absolute; left:0; top:14px; bottom:14px; width:3px;
+    background: var(--amber);
+    border-radius: 0 2px 2px 0;
+  }
+  .qcard.answered.correct::before{
+    content:"";
+    position:absolute; left:0; top:14px; bottom:14px; width:3px;
+    background: var(--good);
+    border-radius: 0 2px 2px 0;
+  }
+  .qcard.answered.incorrect::before{
+    content:"";
+    position:absolute; left:0; top:14px; bottom:14px; width:3px;
+    background: var(--bad);
+    border-radius: 0 2px 2px 0;
+  }
+  .qnum{
+    font-size:11px; color: var(--teal); letter-spacing:0.08em; margin-bottom:6px;
+  }
+  .qtype{
+    font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.07em;
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; margin-left:6px;
+  }
+  .qtext{
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--text);
+    margin: 0 0 12px 0;
+    white-space: pre-line;
+  }
+  .options{
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .opt{
+    display:flex; align-items:flex-start; gap:10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 9px 11px;
+    cursor:pointer;
+    transition: border-color .15s ease, background .15s ease;
+    font-size: 14px;
+  }
+  .opt:hover{ border-color: #38465a; }
+  .opt .box{
+    flex: 0 0 16px; width:16px; height:16px; margin-top:1px;
+    border: 1px solid #4a5b6c; border-radius: 4px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 11px; color: var(--bg);
+  }
+  .opt.radio .box{ border-radius: 50%; }
+  .opt.selected .box{ background: var(--teal); border-color: var(--teal); }
+  .opt span.label{ color: var(--text); }
+
+  .qcard.locked .opt{ cursor:default; }
+  .opt.correct-answer{ border-color: var(--good); background: rgba(74,222,128,0.08); }
+  .opt.wrong-selected{ border-color: var(--bad); background: rgba(248,113,113,0.08); }
+
+  .check-row{
+    margin-top: 12px; display:flex; align-items:center; gap:10px; flex-wrap: wrap;
+  }
+  .btn{
+    font-family: var(--mono);
+    background: var(--teal-dim);
+    color: #04211f;
+    border:none; border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px; font-weight:600; letter-spacing: 0.02em;
+    cursor:pointer;
+  }
+  .btn:hover{ background: var(--teal); }
+  .btn:disabled{ opacity:0.35; cursor:default; }
+  .result-tag{
+    font-size: 12px; font-weight:600;
+  }
+  .result-tag.correct{ color: var(--good); }
+  .result-tag.incorrect{ color: var(--bad); }
+  .penalty-note{
+    font-size: 11px; color: var(--amber);
+  }
+  .explain{
+    margin-top:10px; font-size: 13px; color: var(--text-dim);
+    border-top: 1px dashed var(--line); padding-top: 8px;
+    display:none;
+  }
+  .explain.show{ display:block; }
+
+  .footer-bar{
+    position: sticky; bottom:0; z-index:20;
+    background: rgba(12,17,23,0.95);
+    border-top: 1px solid var(--line);
+    padding: 12px 16px;
+    display:flex; justify-content:center; gap:10px;
+  }
+  .btn-secondary{
+    background: transparent; border: 1px solid var(--line); color: var(--text);
+  }
+  .btn-secondary:hover{ border-color: var(--teal); color: var(--teal); }
+
+  .score-banner{
+    background: var(--panel);
+    border: 1px solid var(--teal-dim);
+    border-radius: 10px;
+    padding: 18px;
+    text-align:center;
+    margin-bottom: 18px;
+    display:none;
+  }
+  .score-banner.show{ display:block; }
+  .score-banner .big{
+    font-family: var(--serif); font-size: 34px; color: var(--teal);
+  }
+  .score-banner .sub{ font-size: 12px; color: var(--text-dim); margin-top:4px;}
+  .nav-bar {
+    background: rgba(12,17,23,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .nav-logo svg {
+    color: var(--teal);
+  }
+  .nav-links {
+    display: flex;
+    gap: 15px;
+  }
+  .btn-nav {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-nav:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="index.html" class="nav-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    PHARJ304
+  </a>
+  <div class="nav-links">
+    <a href="QRM_Inorganique_PHARJ304.html" class="btn-nav">Chimie Inorganique →</a>
+  </div>
+</div>
+
+<div class="header">
+  <div class="eyebrow">PHARJ304 — 2ème session</div>
+  <h1>QRM Radiopharmacie 2324</h1>
+  <div class="meta">26 questions · cochez vos réponses puis validez chaque question pour voir la correction</div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 26</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="score-banner" id="scoreBanner">
+    <div class="big" id="scoreBig">—</div>
+    <div class="sub" id="scoreSub">questions validées correctement</div>
+  </div>
+
+  <div id="quizRoot"></div>
+
+</div>
+
+<div class="footer-bar">
+  <button class="btn btn-secondary" id="resetBtn">Réinitialiser le QRM</button>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Données : 26 questions reproduites mot pour mot du document
+// type: "multi" (plusieurs réponses) ou "single" (une seule réponse)
+// answer: index(es) corrects (0-based) selon les cases cochées sur le document
+// ---------------------------------------------------------------
+const QUESTIONS = [
+{
+  num: 1, type:"multi",
+  text: "La méthode de radiomarquage… (Plusieurs réponses possibles)",
+  options: [
+    "se fait de manière directe par chélation",
+    "est dictée par le choix du radio-isotope",
+    "est dictée par le choix de la molécule",
+    "se fait de manière indirecte par substitution"
+  ],
+  answer:[0,1]
+},
+{
+  num: 2, type:"multi",
+  text: "Le radiomarquage de molécules vectrices par le technétium-99m (Plusieurs réponses possibles)",
+  options: [
+    "se fait à l'aide d'un générateur et des kits",
+    "se fait à la demande",
+    "nécessite un marquage indirect",
+    "se fait après oxydation de l'ion pertechnetate"
+  ],
+  answer:[0,1]
+},
+{
+  num: 3, type:"multi",
+  text: "La dose équivalente… (Plusieurs réponses possibles)",
+  options: [
+    "Prend en compte les caractéristiques du rayonnement",
+    "Est l'unité de la radioprotection",
+    "Est exprimée en Gray",
+    "Est la dose absorbée"
+  ],
+  answer:[0,1]
+},
+{
+  num: 4, type:"multi",
+  text: "La radioactivité est exprimée en… (Plusieurs réponses possibles)",
+  options: ["Becquerel","Désintégration par seconde","Curie","Joule"],
+  answer:[0,1,2]
+},
+{
+  num: 5, type:"multi",
+  text: "Pour se protéger de la radioactivité il faut… (Plusieurs réponses possibles)",
+  options: [
+    "Diluer la solution contenant de la radioactivité",
+    "Prendre ses distances par rapport à la source de radioactivité",
+    "Diminuer le temps d'exposition",
+    "Utiliser des écrans"
+  ],
+  answer:[1,2,3]
+},
+{
+  num: 6, type:"multi",
+  text: "Les produits radiopharmaceutiques sont… (Plusieurs réponses possibles)",
+  options: ["Des produits radioactifs","Des spécialités pharmaceutiques","Des radio-isotopes","Des radiotraceurs"],
+  answer:[0,1,2,3]
+},
+{
+  num: 7, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "Le générateur contient le radio-isotope parent et enfant",
+    "Les radio-isotopes sont toujours produits par un générateur",
+    "Le radio-isotope parent est adsorbé sur une colonne",
+    "Le radio-isotope désiré est produit par décroissance"
+  ],
+  answer:[0,2,3]
+},
+{
+  num: 8, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "Les radio-isotopes sont toujours produits par cyclotron",
+    "Le cyclotron accélère des particules élémentaires",
+    "Le radio-isotope désiré est produit dans un cyclotron par une réaction nucléaire",
+    "Les cibles dans un cyclotron sont uniquement solides"
+  ],
+  answer:[1,2]
+},
+{
+  num: 9, type:"multi",
+  text: "Un radiotraceur est (Plusieurs réponses possibles)",
+  options: [
+    "Un produit radiopharmaceutique",
+    "Un radio-isotope",
+    "Une molécule vectrice radiomarquée",
+    "Utilisé pour suivre la fonction d'un organe"
+  ],
+  answer:[0,2,3]
+},
+{
+  num: 10, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "La demi-vie physique du radio-isotope permet d'obtenir la pureté radio-isotopique",
+    "Le spectre d'énergie du radio-isotope permet d'obtenir la pureté radio-isotopique",
+    "La pureté radio-isotopique = la radioactivité de la molécule radiomarquée désirée sur la radioactivité totale",
+    "La pureté radiochimique est obtenue des caractéristiques du radio-isotope"
+  ],
+  answer:[0,1]
+},
+{
+  num: 11, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "le SPECT est composé d'un collimateur, de détecteurs et des photomultiplicateurs",
+    "Le détecteur du SPECT consiste en un cristal NaI(Tl)",
+    "Le photomultiplicateur transforme le signal électrique en photon qui est ensuite dirigé vers le patient",
+    "tous les photons qui traversent le patient sont détectés et amplifiés"
+  ],
+  answer:[0,1]
+},
+{
+  num: 12, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "L'imagerie PET est basée sur les photons qui sont détectés à 180° et en coïncidence",
+    "L'annihilation du β+ avec un électron est suivie de la libération de 2 photons",
+    "PET= Photon Emission Tomography",
+    "Le PET est composé de détecteurs qui tournent autour du patient"
+  ],
+  answer:[0,1]
+},
+{
+  num: 13, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "L'application théranostique est l'utilisation d'une molécule vectrice identique (ou similaire) en modifiant le radio-isotope pour le traitement ou l'imagerie",
+    "Différentes fonctions d'un organe peuvent être suivies avec différents radiotraceurs",
+    "Un même radiotraceur peut être utilisé pour différents examens",
+    "L'imagerie ou le traitement nécessite toujours une molécule vectrice"
+  ],
+  answer:[0,1,2]
+},
+{
+  num: 14, type:"multi",
+  text: "Sélectionnez la ou les propositions vraies (Plusieurs réponses possibles)",
+  options: [
+    "Les rayonnements ionisent la matière en transformant les atomes neutres de la matière en ions.",
+    "Les rayonnements ionisants déposent leurs énergies en arrachant des protons.",
+    "Les rayonnements α, β et γ déposent directement l'énergie dans la matière.",
+    "Plus l'ionisation est intense plus le trajet est court."
+  ],
+  answer:[0,3]
+},
+{
+  num: 15, type:"single",
+  text: "En médecine nucléaire … Une réponse seule possible",
+  options: [
+    "on utilise des radiotraceurs émetteurs β+ pour l'imagerie SPECT",
+    "on utilise des radiotraceurs émetteurs γ pour le traitement",
+    "l'injection de radiotraceurs est utilisée pour obtenir un meilleur contraste comme pour l'IRM",
+    "les mêmes radiotraceurs peuvent être utilisés pour l'imagerie et la thérapie",
+    "toutes les réponses sont correctes"
+  ],
+  answer:[3]
+},
+{
+  num: 16, type:"single",
+  text: "Les rayonnements… (Une réponse seule possible)",
+  options: [
+    "α sont utilisés pour le diagnostic",
+    "β⁺ ont un fort pouvoir pénétrant",
+    "γ sont fortement ionisants et faiblement pénétrants",
+    "β⁻ sont utilisés pour la thérapie",
+    "Toutes les réponses correctes"
+  ],
+  answer:[3]
+},
+{
+  num: 17, type:"single",
+  text: "Il faut attendre tous les résultats du contrôle de qualité avant d'injecter un médicament radiopharmaceutique (-1 si réponse incorrecte / +1 si réponse bonne)",
+  options: ["Vrai","Faux"],
+  answer:[1]
+},
+{
+  num: 18, type:"single",
+  text: "La majorité des rayonnements ionisant provient de la radioactivité artificielle (-1 si réponse incorrecte / +1 si réponse bonne)",
+  options: ["Vrai","Faux"],
+  answer:[1]
+},
+{
+  num: 19, type:"single",
+  text: "Une mesure de radioactivité est valable qu'a un temps précis. (-1 si réponse incorrecte / +1 si réponse bonne)",
+  options: ["Vrai","Faux"],
+  answer:[0]
+},
+{
+  num: 20, type:"single",
+  text: "⁹⁰₃₉Y --> ˣᵥZr + rayonnement betaˉ.\nSachant que y est le nombre de proton et x une masse atomique, déterminer les valeurs de x et y… (une seule réponse possible)",
+  options: ["x = 90 et y = 40","x = 91 et y = 39","x = 91 et y = 40","x = 90 et y = 39"],
+  answer:[0]
+},
+{
+  num: 21, type:"single",
+  text: "⁶⁸ₓGa --> ʸ₃₀Zn + rayonnement beta⁺.\nSachant que x est le nombre de proton et y une masse atomique, déterminer les valeurs de x et y… (une seule réponse possible)",
+  options: ["x = 31 et y = 68","x = 30 et y = 69","x = 31 et y = 69","x = 30 et y = 67"],
+  answer:[0]
+},
+{
+  num: 22, type:"multi",
+  text: "Quel(s) radiopharmaceutiques est(sont) utilisé(s) pour les rayonnements betaˉ (plusieurs réponses possibles)",
+  options: ["⁹⁹ᵘTc","¹⁸FDG","⁶⁸Ga-DOTATATE","¹⁷⁷Lu-DOTATATE","²²³Ra","¹³¹I"],
+  answer:[3,5]
+},
+{
+  num: 23, type:"multi",
+  text: "Quel(s) radiopharmaceutiques est(sont) utilisé(s) pour les rayonnements beta⁺ (plusieurs réponses possibles)",
+  options: ["⁹⁹ᵘTc","¹⁸FDG","⁶⁸Ga-DOTATATE","¹⁷⁷Lu-DOTATATE","²²³Ra","¹³¹I"],
+  answer:[1,2]
+},
+{
+  num: 24, type:"single",
+  text: "L'origine et le type d'émission du rayonnement alpha sont… (une seule réponse possible)",
+  options: [
+    "Emission corpusculaire et provenant du noyau d'hélium",
+    "une onde électromagnétique et provenant du noyau d'hélium",
+    "Emission corpusculaire et provenant d'un électron",
+    "Emission corpusculaire et provenant d'un positon",
+    "une onde électromagnétique et provenant d'un électron"
+  ],
+  answer:[0]
+},
+{
+  num: 25, type:"multi",
+  text: "La phase concept d'un radiopharmaceutique consiste d'abord… (plusieurs réponses possibles)",
+  options: [
+    "dans le choix de la cible",
+    "dans le choix de la maladie",
+    "dans le choix du modèle animal",
+    "dans le choix de la molécule vectrice",
+    "dans le choix du nombre de patient à traiter"
+  ],
+  answer:[0,3]
+},
+{
+  num: 26, type:"single",
+  text: "Quel est l'étape ultime pour tester la qualité du radio-traceur avant sa mise sur le marché? (une seule réponse possible)",
+  options: [
+    "Une évaluation chez les singes",
+    "Une évaluation chez les souris",
+    "Une évaluation chez les patients",
+    "Une évaluation par les radio-pharmaciens"
+  ],
+  answer:[2]
+}
+];
+
+// État conservé en mémoire pendant la session (pas de localStorage : non supporté dans les artefacts)
+let state = {}; // { qnum: { selected: [idx,...], checked: bool } }
+
+function getQState(num){
+  if(!state[num]) state[num] = { selected: [], checked:false };
+  return state[num];
+}
+
+function arraysEqualAsSets(a,b){
+  if(a.length !== b.length) return false;
+  const sa = [...a].sort().join(",");
+  const sb = [...b].sort().join(",");
+  return sa === sb;
+}
+
+function render(){
+  const root = document.getElementById("quizRoot");
+  root.innerHTML = "";
+
+  QUESTIONS.forEach(q=>{
+    const qs = getQState(q.num);
+    const card = document.createElement("div");
+    card.className = "qcard " + (qs.checked ? "answered" : "unanswered");
+    if(qs.checked){
+      const correct = arraysEqualAsSets(qs.selected, q.answer);
+      card.classList.add(correct ? "correct" : "incorrect");
+      card.classList.add("locked");
+    }
+
+    const numLine = document.createElement("div");
+    numLine.className = "qnum";
+    numLine.innerHTML = "Question " + q.num + " / 26"
+      + '<span class="qtype">' + (q.type === "multi" ? "Plusieurs réponses" : "Une seule réponse") + "</span>";
+    card.appendChild(numLine);
+
+    const qtext = document.createElement("div");
+    qtext.className = "qtext";
+    qtext.textContent = "Q" + q.num + ". " + q.text;
+    card.appendChild(qtext);
+
+    const optsWrap = document.createElement("div");
+    optsWrap.className = "options";
+
+    q.options.forEach((optText, idx)=>{
+      const opt = document.createElement("div");
+      opt.className = "opt " + (q.type === "single" ? "radio" : "checkbox");
+      const isSelected = qs.selected.includes(idx);
+      if(isSelected) opt.classList.add("selected");
+
+      if(qs.checked){
+        const isCorrectOpt = q.answer.includes(idx);
+        if(isCorrectOpt) opt.classList.add("correct-answer");
+        if(isSelected && !isCorrectOpt) opt.classList.add("wrong-selected");
+      }
+
+      const letter = String.fromCharCode(97 + idx); // a, b, c...
+      opt.innerHTML = '<div class="box">' + (isSelected ? "✓" : "") + '</div><span class="label">' + letter + ") " + optText + "</span>";
+
+      if(!qs.checked){
+        opt.addEventListener("click", ()=>{
+          if(q.type === "single"){
+            qs.selected = [idx];
+          } else {
+            const pos = qs.selected.indexOf(idx);
+            if(pos >= 0) qs.selected.splice(pos,1);
+            else qs.selected.push(idx);
+          }
+          render();
+        });
+      }
+
+      optsWrap.appendChild(opt);
+    });
+
+    card.appendChild(optsWrap);
+
+    const checkRow = document.createElement("div");
+    checkRow.className = "check-row";
+
+    if(!qs.checked){
+      const btn = document.createElement("button");
+      btn.className = "btn";
+      btn.textContent = "Valider la réponse";
+      btn.disabled = qs.selected.length === 0;
+      btn.addEventListener("click", ()=>{
+        qs.checked = true;
+        render();
+        updateProgress();
+      });
+      checkRow.appendChild(btn);
+    } else {
+      const correct = arraysEqualAsSets(qs.selected, q.answer);
+      const tag = document.createElement("div");
+      tag.className = "result-tag " + (correct ? "correct" : "incorrect");
+      tag.textContent = correct ? "✓ Correct" : "✗ Incorrect";
+      checkRow.appendChild(tag);
+
+      const redoBtn = document.createElement("button");
+      redoBtn.className = "btn btn-secondary";
+      redoBtn.textContent = "Recommencer cette question";
+      redoBtn.addEventListener("click", ()=>{
+        qs.checked = false;
+        qs.selected = [];
+        render();
+        updateProgress();
+      });
+      checkRow.appendChild(redoBtn);
+    }
+
+    card.appendChild(checkRow);
+    root.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = QUESTIONS.length;
+  let answered = 0, correct = 0;
+  QUESTIONS.forEach(q=>{
+    const qs = getQState(q.num);
+    if(qs.checked){
+      answered++;
+      if(arraysEqualAsSets(qs.selected, q.answer)) correct++;
+    }
+  });
+  document.getElementById("progressFill").style.width = (answered/total*100) + "%";
+  document.getElementById("progressLabel").textContent = answered + " / " + total;
+
+  const banner = document.getElementById("scoreBanner");
+  if(answered === total){
+    banner.classList.add("show");
+    document.getElementById("scoreBig").textContent = correct + " / " + total;
+    document.getElementById("scoreSub").textContent = "questions correctes sur l'ensemble du QRM";
+  } else {
+    banner.classList.remove("show");
+  }
+}
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  state = {};
+  render();
+});
+
+render();
+</script>
+
+</body>
+</html>
