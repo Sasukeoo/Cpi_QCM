@@ -1,2495 +1,2779 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>QRM Chimie Inorganique — PHARJ304</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            :root {
-                --bg: #0b0f19;
-                --panel: #131a26;
-                --panel-2: #1c2536;
-                --line: #2d3d54;
-                --teal: #3ddbd9;
-                --teal-dim: #1d7c7a;
-                --amber: #f59e0b;
-                --good: #10b981;
-                --bad: #ef4444;
-                --text: #f3f4f6;
-                --text-dim: #9ca3af;
-                --sans: "Inter", sans-serif;
-                --serif: "Playfair Display", Georgia, serif;
-                --mono: "JetBrains Mono", monospace;
-            }
-
-            * {
-                box-sizing: border-box;
-            }
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-            }
-            body {
-                background: radial-gradient(
-                        circle at 50% 0%,
-                        #151e2e 0%,
-                        var(--bg) 80%
-                    )
-                    fixed;
-                color: var(--text);
-                font-family: var(--sans);
-                line-height: 1.6;
-                padding: 0 0 100px 0;
-            }
-
-            .nav-bar {
-                background: rgba(11, 15, 25, 0.85);
-                backdrop-filter: blur(12px);
-                border-bottom: 1px solid var(--line);
-                padding: 10px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-            }
-
-            .nav-logo {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-weight: 600;
-                color: var(--text);
-                text-decoration: none;
-                font-family: var(--mono);
-                font-size: 14px;
-            }
-
-            .nav-logo svg {
-                color: var(--teal);
-            }
-
-            .nav-links {
-                display: flex;
-                gap: 15px;
-            }
-
-            .btn-nav {
-                background: transparent;
-                border: 1px solid var(--line);
-                color: var(--text-dim);
-                padding: 6px 12px;
-                border-radius: 6px;
-                font-size: 12px;
-                cursor: pointer;
-                text-decoration: none;
-                transition: all 0.2s;
-                font-family: var(--mono);
-            }
-
-            .btn-nav:hover {
-                border-color: var(--teal);
-                color: var(--teal);
-                box-shadow: 0 0 10px rgba(61, 219, 217, 0.15);
-            }
-
-            .header {
-                background: rgba(19, 26, 38, 0.6);
-                backdrop-filter: blur(10px);
-                border-bottom: 1px solid var(--line);
-                padding: 30px 20px 25px;
-                text-align: center;
-            }
-
-            .eyebrow {
-                font-size: 11px;
-                letter-spacing: 0.15em;
-                text-transform: uppercase;
-                color: var(--teal);
-                margin-bottom: 8px;
-                font-family: var(--mono);
-            }
-
-            h1 {
-                font-family: var(--serif);
-                font-weight: 700;
-                font-size: 28px;
-                margin: 0 0 12px 0;
-                color: var(--text);
-                letter-spacing: -0.01em;
-            }
-
-            .meta {
-                font-size: 13px;
-                color: var(--text-dim);
-                max-width: 600px;
-                margin: 0 auto 20px;
-            }
-
-            .filter-tabs {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                flex-wrap: wrap;
-                margin-bottom: 25px;
-            }
-
-            .tab {
-                background: var(--panel-2);
-                border: 1px solid var(--line);
-                color: var(--text-dim);
-                padding: 8px 16px;
-                border-radius: 20px;
-                font-size: 13px;
-                cursor: pointer;
-                transition: all 0.2s;
-                font-weight: 500;
-            }
-
-            .tab:hover {
-                border-color: var(--text-dim);
-                color: var(--text);
-            }
-
-            .tab.active {
-                background: linear-gradient(
-                    135deg,
-                    var(--teal-dim),
-                    var(--teal)
-                );
-                border-color: var(--teal);
-                color: #0b0f19;
-                font-weight: 600;
-                box-shadow: 0 4px 15px rgba(61, 219, 217, 0.25);
-            }
-
-            .progress-container {
-                max-width: 500px;
-                margin: 0 auto;
-                display: flex;
-                align-items: center;
-                gap: 15px;
-            }
-
-            .progress-track {
-                flex: 1;
-                height: 8px;
-                background: #17212f;
-                border-radius: 4px;
-                overflow: hidden;
-                border: 1px solid var(--line);
-            }
-
-            .progress-fill {
-                height: 100%;
-                background: linear-gradient(
-                    90deg,
-                    var(--teal-dim),
-                    var(--teal)
-                );
-                width: 0%;
-                transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-
-            .progress-label {
-                font-size: 13px;
-                color: var(--text-dim);
-                font-family: var(--mono);
-                min-width: 60px;
-                text-align: right;
-            }
-
-            .container {
-                max-width: 760px;
-                margin: 30px auto 0;
-                padding: 0 16px;
-            }
-
-            .score-banner {
-                background: linear-gradient(135deg, var(--panel), #162438);
-                border: 1px solid var(--teal-dim);
-                border-radius: 12px;
-                padding: 24px;
-                text-align: center;
-                margin-bottom: 25px;
-                display: none;
-                animation: slideDown 0.5s ease-out;
-            }
-
-            @keyframes slideDown {
-                from {
-                    transform: translateY(-10px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-            }
-
-            .score-banner.show {
-                display: block;
-            }
-            .score-banner .big-score {
-                font-family: var(--serif);
-                font-size: 40px;
-                color: var(--teal);
-                font-weight: 700;
-            }
-
-            .score-banner .sub-score {
-                font-size: 14px;
-                color: var(--text-dim);
-                margin-top: 6px;
-            }
-
-            .qcard {
-                background: var(--panel);
-                border: 1px solid var(--line);
-                border-radius: 12px;
-                padding: 24px;
-                margin-bottom: 20px;
-                position: relative;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-                transition:
-                    transform 0.2s,
-                    border-color 0.2s;
-            }
-
-            .qcard:hover {
-                border-color: #3f5573;
-            }
-
-            .qcard.unanswered::before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 20px;
-                bottom: 20px;
-                width: 4px;
-                background: var(--amber);
-                border-radius: 0 4px 4px 0;
-            }
-
-            .qcard.answered.correct::before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 20px;
-                bottom: 20px;
-                width: 4px;
-                background: var(--good);
-                border-radius: 0 4px 4px 0;
-            }
-
-            .qcard.answered.incorrect::before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 20px;
-                bottom: 20px;
-                width: 4px;
-                background: var(--bad);
-                border-radius: 0 4px 4px 0;
-            }
-
-            .qnum {
-                font-size: 11px;
-                color: var(--teal);
-                letter-spacing: 0.1em;
-                font-family: var(--mono);
-                text-transform: uppercase;
-                margin-bottom: 10px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .qtype {
-                font-size: 10px;
-                color: var(--text-dim);
-                border: 1px solid var(--line);
-                border-radius: 4px;
-                padding: 2px 6px;
-                font-family: var(--sans);
-                font-weight: 500;
-            }
-
-            .qtext {
-                font-family: var(--serif);
-                font-size: 18px;
-                color: var(--text);
-                margin: 0 0 16px 0;
-                line-height: 1.5;
-            }
-
-            .options {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .opt {
-                display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                background: var(--panel-2);
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 12px 14px;
-                cursor: pointer;
-                transition: all 0.15s ease;
-                font-size: 15px;
-            }
-
-            .opt:hover {
-                border-color: #4a5e7b;
-                background: #222d42;
-            }
-
-            .opt .checkbox-indicator {
-                flex: 0 0 18px;
-                width: 18px;
-                height: 18px;
-                margin-top: 2px;
-                border: 1px solid #5a7192;
-                border-radius: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 11px;
-                color: var(--bg);
-                transition: all 0.15s;
-                background: transparent;
-            }
-
-            .opt.radio .checkbox-indicator {
-                border-radius: 50%;
-            }
-
-            .opt.selected .checkbox-indicator {
-                background: var(--teal);
-                border-color: var(--teal);
-                box-shadow: 0 0 8px rgba(61, 219, 217, 0.4);
-            }
-
-            .opt span.label-text {
-                color: var(--text);
-            }
-
-            .qcard.locked .opt {
-                cursor: default;
-            }
-
-            .qcard.locked .opt:hover {
-                background: var(--panel-2);
-                border-color: var(--line);
-            }
-
-            .opt.correct-answer {
-                border-color: var(--good);
-                background: rgba(16, 185, 129, 0.08);
-            }
-            .opt.correct-answer:hover {
-                background: rgba(16, 185, 129, 0.08);
-                border-color: var(--good);
-            }
-
-            .opt.wrong-selected {
-                border-color: var(--bad);
-                background: rgba(239, 68, 68, 0.08);
-            }
-            .opt.wrong-selected:hover {
-                background: rgba(239, 68, 68, 0.08);
-                border-color: var(--bad);
-            }
-
-            .check-row {
-                margin-top: 18px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                flex-wrap: wrap;
-            }
-
-            .btn {
-                font-family: var(--mono);
-                background: linear-gradient(
-                    135deg,
-                    var(--teal-dim),
-                    var(--teal)
-                );
-                color: #0b0f19;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-size: 13px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
-
-            .btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(61, 219, 217, 0.3);
-            }
-
-            .btn:disabled {
-                opacity: 0.3;
-                transform: none;
-                box-shadow: none;
-                cursor: not-allowed;
-            }
-
-            .btn-secondary {
-                background: transparent;
-                border: 1px solid var(--line);
-                color: var(--text);
-            }
-
-            .btn-secondary:hover {
-                border-color: var(--teal);
-                color: var(--teal);
-                background: rgba(61, 219, 217, 0.05);
-            }
-
-            .result-tag {
-                font-size: 13px;
-                font-weight: 600;
-                display: inline-flex;
-                align-items: center;
-                gap: 4px;
-            }
-
-            .result-tag.correct {
-                color: var(--good);
-            }
-            .result-tag.incorrect {
-                color: var(--bad);
-            }
-
-            /* Fitb / text à trous specific classes */
-            .fitb-select {
-                background: var(--panel-2);
-                border: 1px solid var(--line);
-                color: var(--text);
-                border-radius: 4px;
-                padding: 3px 6px;
-                font-family: var(--sans);
-                font-size: 14px;
-                cursor: pointer;
-                outline: none;
-                margin: 0 4px;
-                transition: all 0.2s;
-            }
-
-            .fitb-select:focus {
-                border-color: var(--teal);
-            }
-
-            .fitb-select.correct {
-                border-color: var(--good);
-                background: rgba(16, 185, 129, 0.1);
-            }
-
-            .fitb-select.incorrect {
-                border-color: var(--bad);
-                background: rgba(239, 68, 68, 0.1);
-            }
-
-            .fitb-answer-sheet {
-                margin-top: 15px;
-                background: rgba(19, 26, 38, 0.8);
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 12px 16px;
-                font-size: 14px;
-                animation: fadeIn 0.3s;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-
-            .fitb-answer-sheet ol {
-                margin: 5px 0 0 0;
-                padding-left: 20px;
-                color: var(--text);
-            }
-
-            .fitb-answer-sheet li {
-                margin-bottom: 4px;
-            }
-
-            .fitb-answer-sheet span.corr-val {
-                color: var(--good);
-                font-weight: 500;
-            }
-
-            /* Matching exercises specific styling */
-            .matching-container {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .matching-row {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                background: var(--panel-2);
-                border: 1px solid var(--line);
-                border-radius: 8px;
-                padding: 10px 14px;
-                transition: all 0.2s;
-            }
-
-            .matching-row.correct {
-                border-color: var(--good);
-            }
-
-            .matching-row.incorrect {
-                border-color: var(--bad);
-            }
-
-            .match-left {
-                flex: 1;
-                font-weight: 500;
-                font-size: 14px;
-            }
-
-            .match-right {
-                flex: 1;
-            }
-
-            .match-select {
-                width: 100%;
-                background: var(--panel);
-                border: 1px solid var(--line);
-                color: var(--text);
-                padding: 6px 10px;
-                border-radius: 6px;
-                font-family: var(--sans);
-                font-size: 13px;
-                outline: none;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-
-            .match-select:focus {
-                border-color: var(--teal);
-            }
-
-            .match-select.correct {
-                border-color: var(--good);
-                color: var(--good);
-                background: rgba(16, 185, 129, 0.05);
-            }
-
-            .match-select.incorrect {
-                border-color: var(--bad);
-                color: var(--bad);
-                background: rgba(239, 68, 68, 0.05);
-            }
-
-            .match-correct-text {
-                font-size: 11px;
-                color: var(--good);
-                margin-top: 4px;
-                display: block;
-            }
-
-            /* Footer and reset styling */
-            .footer-bar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(11, 15, 25, 0.95);
-                backdrop-filter: blur(10px);
-                border-top: 1px solid var(--line);
-                padding: 15px;
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-                z-index: 50;
-            }
-
-            /* Scroll bar styling */
-            ::-webkit-scrollbar {
-                width: 8px;
-            }
-            ::-webkit-scrollbar-track {
-                background: var(--bg);
-            }
-            ::-webkit-scrollbar-thumb {
-                background: var(--line);
-                border-radius: 4px;
-            }
-            ::-webkit-scrollbar-thumb:hover {
-                background: #3c5270;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="nav-bar">
-            <a href="index.html" class="nav-logo">
-                <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path
-                        d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-                    ></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                PHARJ304
-            </a>
-            <div class="nav-links">
-                <a href="QRM_Radiopharmacie_PHARJ304.html" class="btn-nav"
-                    >Radiopharmacie →</a
-                >
-            </div>
-        </div>
-
-        <div class="header">
-            <div class="eyebrow">Chimie Pharmaceutique Inorganique</div>
-            <h1 id="pageTitle">Chimie Inorganique</h1>
-            <div class="meta">
-                Entraînez-vous avec les questions d'examens et les exercices
-                issus du cours de Chimie Inorganique.
-            </div>
-
-            <div class="filter-tabs">
-                <button class="tab active" onclick="setFilter('all')">
-                    Tout mélanger
-                </button>
-                <button class="tab" onclick="setFilter('juin2025')">
-                    Session Juin 2025 (35 Q)
-                </button>
-                <button class="tab" onclick="setFilter('aout2024')">
-                    Session Août 2024 (35 Q)
-                </button>
-                <button class="tab" onclick="setFilter('pva')">
-                    Exercices PVA (9 ex)
-                </button>
-            </div>
-
-            <div class="progress-container">
-                <div class="progress-track">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-label" id="progressLabel">0 / 0</div>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="score-banner" id="scoreBanner">
-                <div class="big-score" id="scoreBig">—</div>
-                <div class="sub-score" id="scoreSub">
-                    questions complétées correctement
-                </div>
-            </div>
-
-            <div id="quizRoot"></div>
-        </div>
-
-        <div class="footer-bar">
-            <button class="btn btn-secondary" onclick="resetQuiz()">
-                Réinitialiser le QRM
-            </button>
-        </div>
-
-        <script>
-            // --- DATABASES ---
-            // We insert the JS variables directly here
-            // Données générées des QRM de Chimie Inorganique
-            const QUESTIONS_JUIN_2025 = [
-                {
-                    num: "Q1",
-                    text: "Le carbonate de lithium est... (Une seule réponse possibl",
-                    options: [
-                        "a) un thymorégulateur utilisé dans les troubles bipolaires",
-                        "un thymorégulateur utilisé dans les troubles anxieux",
-                        "un psychostimulant utilisé dans les troubles bipolaires",
-                        "un psychosuppresseur utilisé dans les troubles bipolaires",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q1",
-                    type: "single",
-                },
-                {
-                    num: "Q2",
-                    text: "Le magnésium est utilisé en I.V. dans quelle pathologie (Une seule réponse possibl",
-                    options: [
-                        "a) La pré-éclampsie",
-                        "L'hypermagnésémie",
-                        "La déshydratation",
-                        "L'ulcère gastrique",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q2",
-                    type: "single",
-                },
-                {
-                    num: "Q3",
-                    text: "Parmi ces composants, lequel n'est pas un anti-acide... (Une seule réponse possibl",
-                    options: [
-                        "a) Sous-citrate de Bismuth",
-                        "Al(OH)3",
-                        "Mg(OH)2",
-                        "Carbone de calcium",
-                        "Bicarbonate de sodium",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q3",
-                    type: "single",
-                },
-                {
-                    num: "Q4",
-                    text: "Les agents de contraste iodés... (Une seule réponse possibl",
-                    options: [
-                        "a) Toutes les réponses sont correctes.",
-                        "doivent contenir 50 à 60 % en poids d'iode",
-                        "doivent avoir des liaisons iode – composé organique solides afin de prévenir le relâchement d'iode dans l'organisme ou lors de la stérilisation",
-                        "pour l'usage IV, les combinaisons doivent être solubles dans l'eau. Elles doivent avoir un effet osmotique minimal",
-                        "Les propriétés biopharmaceutiques doivent faire en sorte que le produit arrive très vite à l'organe d'intérêt",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q4",
-                    type: "single",
-                },
-                {
-                    num: "Q5",
-                    text: "L'ulcère ne provient pas... (Une seule réponse possibl",
-                    options: [
-                        "a) d'une infection virale",
-                        "d'une infection à Helicobacter pylori",
-                        "d'usage prolongé des AINS",
-                        "du stress",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q5",
-                    type: "single",
-                },
-                {
-                    num: "Q6",
-                    text: "Le carbonate de lithium est... (Une seule réponse possibl",
-                    options: [
-                        "a) néphrotoxique et il a une marge thérapeutique étroite.",
-                        "néphrotoxique et il a une marge thérapeutique large",
-                        "hépatotoxique et il a une marge thérapeutique large",
-                        "hépatotoxique et il a une marge thérapeutique étroite",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q6",
-                    type: "single",
-                },
-                {
-                    num: "Q7",
-                    text: "Lequel de ces produits n'est pas un antiseptique? (Une seule réponse possibl",
-                    options: [
-                        "a) l'ioversol",
-                        "l'iode",
-                        "l'acide hypochloreux",
-                        "le peroxyde d'hydrogène",
-                        "le borax",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q7",
-                    type: "single",
-                },
-                {
-                    num: "Q8",
-                    text: "Lequel de ces ions n'est pas utilisé en thérapeutique... (Une seule réponse possibl",
-                    options: [
-                        "a) Le bromure",
-                        "Le zinc",
-                        "Le phosphate",
-                        "Le chlorure",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q8",
-                    type: "single",
-                },
-                {
-                    num: "Q9",
-                    text: "La prise de fer ou de cations divalents en général ne peut se faire avec... (Une seule réponse possibl",
-                    options: [
-                        "a) une quinolone car cela va diminuer la biodisponibilité du cation et de la quinolone",
-                        "un grand verre d'eau minérale pour éviter le surdosage en cation",
-                        "une pénicilline car cela va diminuer la biodisponibilité du cation et de la pénicilline",
-                        "du lait car cela va diminuer la biodisponibilité du cation",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q9",
-                    type: "single",
-                },
-                {
-                    num: "Q10",
-                    text: "Le baryum est (Une seule réponse possibl",
-                    options: [
-                        "a) Utilisé en intraveineuse pour faire une radiographie",
-                        "Est sous forme de sel insoluble dans l'eau à cause de sa toxicité",
-                        "Est un cation monovalent",
-                        "Se prend par voie orale sous forme de chlorure",
-                        "Aucune des réponses sont correctes",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q10",
-                    type: "single",
-                },
-                {
-                    num: "Q11",
-                    text: "Le charbon actif est... (Une seule réponse possibl",
-                    options: [
-                        "a) Utilisé en urgence pour favoriser le vomissement",
-                        "Est un absorbant qui permet de fixer les toxines bactériennes",
-                        "Est un adsorbant qui permet de fixer les bulles de gaz en cas de ballonnements",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [2],
-                    source: "juin2025",
-                    id: "j25_Q11",
-                    type: "single",
-                },
-                {
-                    num: "Q12",
-                    text: "Laquelle de ces propositions est fausse? (Une seule réponse possibl",
-                    options: [
-                        "a) Le sodium est un cation monovalent principalement présent dans le liquide extracellulaire",
-                        "Le potassium est un cation monovalent principalement présent dans la cellule",
-                        "Le calcium est présent dans le liquide extracellulaire ou stocké dans les réticulums sarcoplasmiques",
-                        "Le chlorure est un anion monovalent principalement présent dans le liquide extracellulaire",
-                        "La répartition homogène des ions de part et d'autre de la membrane cytoplasmique explique la différence de potentiel de – 70 à 90 mV observé sur la membrane",
-                    ],
-                    answer: [4],
-                    source: "juin2025",
-                    id: "j25_Q12",
-                    type: "single",
-                },
-                {
-                    num: "Q13",
-                    text: "Parmi les propositions suivantes laquelle est fausse: (Une seule réponse possibl",
-                    options: [
-                        "a) Le platine est un métal",
-                        "Le platine est utilisé sous forme de complexe hexacoordonné",
-                        "Le platine est un agent intercalant de l'ADN",
-                        "Le platine est un agent anti-cancéreux",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q13",
-                    type: "single",
-                },
-                {
-                    num: "Q14",
-                    text: "l'échangeur d'électrolyte du Co-transport Na+/Cl- régule la réabsorption des cations et anions au niveau",
-                    options: [
-                        "du tube Proximal",
-                        "du tube distal",
-                        "du tube collecteur",
-                        "de l'anse de Henlé",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q14",
-                    type: "single",
-                },
-                {
-                    num: "Q15",
-                    text: "Question sur la physiologie du fer (plusieurs réponses possibles): l'apport journalier en fer chez une personne saine est de...",
-                    options: [
-                        "de 1 à 2 mg car il est principalement recyclé à partir des globules rouges",
-                        "de 10 à 20 mg car il est principalement recyclé à partir des globules rouges",
-                        "de 1 à 2 mg car il est principalement recyclé grâce aux macrophages",
-                        "de 10 à 20 mg car il est principalement recyclé grâce aux cellules de Küpfer",
-                        "de 1 à 2 mg car il est principalement stocké par la transferrine",
-                        "de 10 à 20 mg car il est principalement stocké par la transferrine",
-                    ],
-                    answer: [0, 2],
-                    source: "juin2025",
-                    id: "j25_Q15",
-                    type: "multi",
-                },
-                {
-                    num: "Q16",
-                    text: "Le monoxyde d'azote... (plusieurs réponses possibles)",
-                    options: [
-                        "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
-                        "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
-                        "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
-                        "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
-                        "est un gaz qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules musculaires lisses",
-                        "est un sel qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules endothéliales",
-                        "Il augmente la production de GMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
-                        "Il augmente la production de AMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
-                        "Il est produit par la NO synthase à partir de la citruline et d'oxygène",
-                        "Il est produit par la NO synthase à partir de l'arginine et d'oxygène",
-                    ],
-                    answer: [1, 6, 9],
-                    source: "juin2025",
-                    id: "j25_Q16",
-                    type: "multi",
-                },
-                {
-                    num: "Q17",
-                    text: "La parathormone... (plusieurs réponses possibles)",
-                    options: [
-                        "augmente l'absorption du Calcium au niveau intestinal, augmente sa réabsorption rénale et augmente l'activité des ostéoclastes ce qui augmente la calcémie",
-                        "augmente l'absorption du Calcium au niveau intestinal, diminue sa réabsorption rénale et augmente l'activité des ostéoclastes ce qui diminue la calcémie",
-                        "diminue l'absorption du Calcium au niveau intestinal, augmente sa réabsorption rénale et diminue l'activité des ostéoclastes ce qui augmente la calcémie",
-                        "diminue l'absorption du Calcium au niveau intestinal, augmente sa réabsorption rénale et diminue l'activité des ostéoclastes ce qui diminue la calcémie",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q17",
-                    type: "multi",
-                },
-                {
-                    num: "Q18",
-                    text: "La vitamine D favorise la synthèse osseuse... (plusieurs réponses possibles)",
-                    options: [
-                        "en augmentant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                        "en augmentant l'absorption du calcium au niveau intestinal, en diminuant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                        "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en diminuant l'activité des ostéoblastes",
-                        "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q18",
-                    type: "multi",
-                },
-                {
-                    num: "Q19",
-                    text: "La membrane... (plusieurs réponses possibles)",
-                    options: [
-                        "est polarisée par une forte concentration en potassium intracellulaire et de sodium et chlorure extracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
-                        "est polarisée par une forte concentration en potassium extracellulaire et de sodium et chlorure intracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
-                        "Sa dépolarisation est obtenue par une entrée massive de sodium dans la cellule suivie par un légère polarisation par entrée de chlorure",
-                        "Sa dépolarisation est obtenue par une entrée massive de potassium dans la cellule suivie par un légère polarisation par entrée de chlorure",
-                        "La repolarisation continue par une sortie de potassium, tandis que le calcium entre dans la cellule",
-                        "La repolarisation continue par une sortie de calcium, tandis que le sodium entre dans la cellule",
-                    ],
-                    answer: [0, 2, 4],
-                    source: "juin2025",
-                    id: "j25_Q19",
-                    type: "multi",
-                },
-                {
-                    num: "Q20",
-                    text: "La membrane... (plusieurs réponses possibles)",
-                    options: [
-                        "la repolarisation par la sortie de potassium et le blocage de l'entrée de sodium conduit à une hyperpolarisation de - 90 mV",
-                        "la repolarisation par la sortie de sodium et le blocage de l'entrée de calcium conduit à une hyperpolarisation de - 90 mV",
-                        "Afin d'obtenir une repolarisation complète, une pompe Na+/K+/ATP assure la répartition hétérogène des cations de part et d'autre de la membrane",
-                        "Afin d'obtenir une repolarisation complète, une pompe Na+/Cl-/ATP assure la répartition hétérogène des cations de part et d'autre de la membrane",
-                        "Afin d'obtenir une repolarisation complète, une pompe Na+/K+/ATP assure la répartition homogène des cations de part et d'autre de la membrane",
-                    ],
-                    answer: [0, 2],
-                    source: "juin2025",
-                    id: "j25_Q20",
-                    type: "multi",
-                },
-                {
-                    num: "Q21",
-                    text: "L'oxygène... (plusieurs réponses possibles)",
-                    options: [
-                        "est un gaz qui diffuse librement à travers les membranes et qui est transporté par la myoglobine",
-                        "est un gaz qui diffuse librement à travers les membranes et qui est transporté par l'hémoglobine",
-                        "Il est indispensable à la cellule car il permet à celle-ci de faire le transfert de proton depuis la chaine respiratoire des mitochondries",
-                        "Il est indispensable à la cellule car il permet à celle-ci de faire le transfert d'électron depuis la chaine respiratoire des mitochondries",
-                        "il est particulièrement bien absorbé par les cellules musculaires qui contiennent de la myoglobine ayant une haute affinité pour ce gaz",
-                        "il est particulièrement bien absorbé par les cellules musculaires qui contiennent de l'hémoglobine ayant une haute affinité pour ce gaz",
-                    ],
-                    answer: [1, 3, 4],
-                    source: "juin2025",
-                    id: "j25_Q21",
-                    type: "multi",
-                },
-                {
-                    num: "Q22",
-                    text: "Vrai-Faux: la vitamine D est un facteur indispensable pour l'homéostasie du Calcium (-1 si réponse incorrecte / +1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q22",
-                    type: "single",
-                },
-                {
-                    num: "Q23",
-                    text: "Vrai-Faux: Le anti-acides sont indiqués en première intention dans les ulcères à Helicobacter pylori (-1 si réponse incorrecte / +1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q23",
-                    type: "single",
-                },
-                {
-                    num: "Q24",
-                    text: 'Vrai-Faux: le lithium a le statut de médicament "no-switch" car il a une marge thérapeutique étroite (-1 si réponse incorrecte/+1 si réponse bonn',
-                    options: ["a) Vrai", "Faux"],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q24",
-                    type: "single",
-                },
-                {
-                    num: "Q25",
-                    text: "Vrai-Faux: L'oxyde de zinc est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q25",
-                    type: "single",
-                },
-                {
-                    num: "Q26",
-                    text: "L'effet indésirable du bicarbonate de sodium est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Néphrotoxicité",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [4],
-                    source: "juin2025",
-                    id: "j25_Q26",
-                    type: "single",
-                },
-                {
-                    num: "Q27",
-                    text: "L'effet indésirable des sels de fer est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Néphrotoxicité",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q27",
-                    type: "single",
-                },
-                {
-                    num: "Q28",
-                    text: "L'effet indésirable du lithium est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Néphrotoxicité",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q28",
-                    type: "single",
-                },
-                {
-                    num: "Q29",
-                    text: "Quel est l'antidote du fer...",
-                    options: [
-                        "La défériprone",
-                        "Le carbonate de lanthane",
-                        "L'acétate de zinc",
-                        "Le polystyrène sulfonate de sodium",
-                        "L'hydroxycolbalamine",
-                    ],
-                    answer: [0],
-                    source: "juin2025",
-                    id: "j25_Q29",
-                    type: "single",
-                },
-                {
-                    num: "Q30",
-                    text: "Quel est l'antidote du phosphate...",
-                    options: [
-                        "La défériprone",
-                        "Le carbonate de lanthane",
-                        "L'acétate de zinc",
-                        "Le polystyrène sulfonate de sodium",
-                        "L'hydroxycolbalamine",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q30",
-                    type: "single",
-                },
-                {
-                    num: "Q31",
-                    text: "Le dosage du K+ en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "20 méq",
-                        "3 mL/ 100 mL",
-                        "65 mg",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q31",
-                    type: "single",
-                },
-                {
-                    num: "Q32",
-                    text: "Le dosage du gluconate de fer en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "20 méq",
-                        "3 mL/ 100 mL",
-                        "65 mg",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [4],
-                    source: "juin2025",
-                    id: "j25_Q32",
-                    type: "single",
-                },
-                {
-                    num: "Q33",
-                    text: "Le dosage de la vitamine D en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "1000 mg",
-                        "3 mL/ 100 mL",
-                        "800 UI",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [3],
-                    source: "juin2025",
-                    id: "j25_Q33",
-                    type: "single",
-                },
-                {
-                    num: "Q34",
-                    text: "En imagerie, l'iode et le gadotéridol sont respectivement utilisés pour...",
-                    options: [
-                        "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
-                        "Le PET Scan et la scintigraphie osseuse",
-                        "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
-                        "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire",
-                    ],
-                    answer: [3],
-                    source: "juin2025",
-                    id: "j25_Q34",
-                    type: "single",
-                },
-                {
-                    num: "Q35",
-                    text: "En imagerie, le 18F-2-fluorodéoxyglucose et le 99mTc-diphosphonate sont respectivement utilisés pour...",
-                    options: [
-                        "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
-                        "Le PET Scan et la scintigraphie osseuse",
-                        "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
-                        "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire",
-                    ],
-                    answer: [1],
-                    source: "juin2025",
-                    id: "j25_Q35",
-                    type: "single",
-                },
-            ];
-            const QUESTIONS_AOUT_2024 = [
-                {
-                    num: "Q1",
-                    text: "Parmi ces composants, lequel n'est pas un anti-acide... (Une seule réponse possibl",
-                    options: [
-                        "a) Sous-citrate de Bismuth",
-                        "Al(OH)3",
-                        "Mg(OH)2",
-                        "Carbonate de calcium",
-                        "Bicarbonate de sodium",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q1",
-                    type: "single",
-                },
-                {
-                    num: "Q2",
-                    text: "L'ulcère ne provient pas... (Une seule réponse possibl",
-                    options: [
-                        "a) d'une infection virale",
-                        "d'une infection à Helicobacter pylori",
-                        "d'usage prolongé des AINS",
-                        "du stress",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q2",
-                    type: "single",
-                },
-                {
-                    num: "Q3",
-                    text: "Le carbonate de lithium est... (Une seule réponse possibl",
-                    options: [
-                        "a) néphrotoxique et il a une marge thérapeutique étroite.",
-                        "néphrotoxique et il a une marge thérapeutique large",
-                        "hépatotoxique et il a une marge thérapeutique large",
-                        "hépatotoxique et il a une marge thérapeutique étroite",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q3",
-                    type: "single",
-                },
-                {
-                    num: "Q4",
-                    text: "Parmi les propositions sur le fluorure laquelle est fausse (Une seule réponse possibl",
-                    options: [
-                        "a) une dose de fluor de 1100 ppm est tolérée chez un enfant de 1 an",
-                        "une dose de fluor de 1100 ppm est tolérée chez un enfant de 2 ans et plus",
-                        "une dose de fluor de 1450 ppm est tolérée chez un enfant de 6 ans et plus",
-                        "une dose de fluor de 900 ppm est tolérée chez un enfant de 1 an",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q4",
-                    type: "single",
-                },
-                {
-                    num: "Q5",
-                    text: "Lequel de ces produits n'est pas un antiseptique? (Une seule réponse possibl",
-                    options: [
-                        "a) l'ioversol",
-                        "l'iode",
-                        "l'acide hypochloreux",
-                        "le peroxyde d'hydrogène",
-                        "le borax",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q5",
-                    type: "single",
-                },
-                {
-                    num: "Q6",
-                    text: "Calcium et ostéoporose: laquelle de ces propositions est fausse (Une seule réponse possibl",
-                    options: [
-                        "a) le carbonate de calcium entre 800 et 1200 mg est utilisé en prévention de l'ostéoporose",
-                        "Le calcium élémentaire entre 800 et 1200 mg est utilisé en prévention de l'ostéoporose",
-                        "Le calcium est utilisé en association avec la Vitamine D car cette dernière favorise son absorption",
-                        "Le calcium est utilisé en association avec la Vitamine D car cette dernière favorise son incorporation dans l'os",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q6",
-                    type: "single",
-                },
-                {
-                    num: "Q7",
-                    text: "La prise de fer ou de cations divalents en général ne peut se faire avec... (Une seule réponse possibl",
-                    options: [
-                        "a) une quinolone car cela va diminuer la biodisponibilité du cation et de la quinolone",
-                        "un grand verre d'eau minérale pour éviter le surdosage en cation",
-                        "une pénicilline car cela va diminuer la biodisponibilité du cation et de la pénicilline",
-                        "du lait car cela va diminuer la biodisponibilité du cation",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q7",
-                    type: "single",
-                },
-                {
-                    num: "Q8",
-                    text: "L'hyperkaliémie... (Une seule réponse possibl",
-                    options: [
-                        "a) provoque une fibrillation cardiaque",
-                        "provoque des diarrhées importantes",
-                        "provoque des crampes musculaires",
-                        "provoque une hypertension artérielle",
-                        "Toutes les propositions sont vraies",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q8",
-                    type: "single",
-                },
-                {
-                    num: "Q9",
-                    text: "Le baryum est (Une seule réponse possibl",
-                    options: [
-                        "a) Utilisé en intraveineuse pour faire une radiographie",
-                        "Est sous forme de sel insoluble dans l'eau à cause de sa toxicité",
-                        "Est un cation monovalent",
-                        "Se prend par voie orale sous forme de chlorure",
-                        "Aucune des réponses sont correctes",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q9",
-                    type: "single",
-                },
-                {
-                    num: "Q10",
-                    text: "Le charbon actif est... (Une seule réponse possibl",
-                    options: [
-                        "a) Utilisé en urgence pour favoriser le vomissement",
-                        "Est un absorbant qui permet de fixer les toxines bactériennes",
-                        "Est un adsorbant qui permet de fixer les bulles de gaz en cas de ballonnements",
-                        "Toutes les réponses sont correctes",
-                    ],
-                    answer: [2],
-                    source: "aout2024",
-                    id: "a24_Q10",
-                    type: "single",
-                },
-                {
-                    num: "Q11",
-                    text: "Laquelle de ces propositions est fausse? (Une seule réponse possibl",
-                    options: [
-                        "a) Le sodium est un cation monovalent principalement présent dans le liquide extracellulaire",
-                        "Le potassium est un cation monovalent principalement présent dans le plasma",
-                        "Le calcium est présent dans le liquide extracellulaire ou stocké dans les réticulums sarcoplasmiques",
-                        "Le chlorure est un anion monovalent principalement présent dans le liquide extracellulaire",
-                        "La répartition hétérogène des ions de part et d'autre de la membrane cytoplasmique explique la différence de potentiel de – 70 à 90 mV observé sur la membrane",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q11",
-                    type: "single",
-                },
-                {
-                    num: "Q12",
-                    text: "Lequel de ces ions n'est pas utilisé en thérapeutique... (Une seule réponse possibl",
-                    options: [
-                        "a) Le bromure",
-                        "Le sodium",
-                        "Le phosphate",
-                        "Le fluorure",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q12",
-                    type: "single",
-                },
-                {
-                    num: "Q13",
-                    text: "Parmi les propositions suivantes laquelle est fausse: (Une seule réponse possibl",
-                    options: [
-                        "a) Le platine est un métal",
-                        "Le platine est utilisé sous forme de complexe hexacoordonné",
-                        "Le platine est un agent intercalant de l'ADN",
-                        "Le platine est un agent anti-cancéreux",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q13",
-                    type: "single",
-                },
-                {
-                    num: "Q14",
-                    text: "l'échangeur d'électrolyte du co-transport Na+/K+/2Cl- régule la réabsorption des cations et anions au niveau",
-                    options: [
-                        "du tube Proximal",
-                        "du tube distal",
-                        "du tube collecteur",
-                        "de l'anse de Henlé",
-                    ],
-                    answer: [3],
-                    source: "aout2024",
-                    id: "a24_Q14",
-                    type: "single",
-                },
-                {
-                    num: "Q15",
-                    text: "Question sur la physiologie du fer (plusieurs réponses possibles): le fer est",
-                    options: [
-                        "stocké par la ferritine notamment dans le foie",
-                        "transporté par la transferrine dans le sang",
-                        "stocké par la transferrine dans la moelle osseuse",
-                        "absorbé sous forme héminique et fer (III)",
-                        "absorbé sous forme héminique et fer (II)",
-                        "transporté par la ferritine dans le sang",
-                    ],
-                    answer: [0, 1, 4],
-                    source: "aout2024",
-                    id: "a24_Q15",
-                    type: "multi",
-                },
-                {
-                    num: "Q16",
-                    text: "Le monoxyde d'azote... (plusieurs réponses possibles)",
-                    options: [
-                        "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
-                        "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
-                        "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
-                        "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
-                        "est un gaz qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules musculaires lisses",
-                        "est un sel qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules endothéliales",
-                        "Il augmente la production de GMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
-                        "Il augmente la production de AMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
-                        "Il est produit par la NO synthase à partir de la citruline et d'oxygène",
-                        "Il est produit par la NO synthase à partir de l'arginine et d'oxygène",
-                    ],
-                    answer: [1, 6, 9],
-                    source: "aout2024",
-                    id: "a24_Q16",
-                    type: "multi",
-                },
-                {
-                    num: "Q17",
-                    text: "Le calcium... (plusieurs réponses possibles)",
-                    options: [
-                        "est un cation divalent de la famille des alcalino-terreux",
-                        "est un cation monovalent de la famille des alcalino-terreux",
-                        "est un cation divalent de la famille des alcalins",
-                        "est un cation monovalent de la famille des alcalins",
-                        "Sa teneur dans le plasma est sous le contrôle de la calcitonine qui est hypocalcémiante",
-                        "Sa teneur dans le plasma est sous le contrôle de la parathormone qui est hypocalcémiante",
-                        "Sa teneur dans le plasma est sous le contrôle de la calcitonine qui est hypercalcémiante",
-                        "Sa teneur dans le plasma est sous le contrôle de la parathormone qui est hypercalcémiante",
-                    ],
-                    answer: [0, 4, 7],
-                    source: "aout2024",
-                    id: "a24_Q17",
-                    type: "multi",
-                },
-                {
-                    num: "Q18",
-                    text: "La calcitonine... (une seul répons",
-                    options: [
-                        "a) diminue la réabsorption rénale du calcium, augmente l'activité des ostéoclastes et diminue l'activité des ostéoblastes ce qui diminue la calcémie",
-                        "augmente la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui augmente la calcémie",
-                        "augmente la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui augmente la calcémie",
-                        "diminue la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui diminue la calcémie",
-                    ],
-                    answer: [3],
-                    source: "aout2024",
-                    id: "a24_Q18",
-                    type: "single",
-                },
-                {
-                    num: "Q19",
-                    text: "Le calcium... (plusieurs réponses possibles)",
-                    options: [
-                        "Il provoque la contraction musculaire en se fixant sur la troponine C et favorisant la fixation de la myosine sur l'actine",
-                        "Il provoque la contraction musculaire en se fixant sur la myosine et favorisant la fixation de la troponine C sur l'actine",
-                        "Il est majoritairement contenu dans les cellules",
-                        "Il est majoritairement contenu dans les os",
-                        "il a une faible affinité pour son site de fixation ce qui requiert des fortes concentrations de calcium",
-                        "il a une forte affinité pour son site de fixation ce qui requiert des faibles concentrations de calcium",
-                    ],
-                    answer: [0, 3, 4],
-                    source: "aout2024",
-                    id: "a24_Q19",
-                    type: "multi",
-                },
-                {
-                    num: "Q20",
-                    text: "La vitamine D favorise la synthèse osseuse... (une seule répons",
-                    options: [
-                        "a) en augmentant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                        "en augmentant l'absorption du calcium au niveau intestinal, en diminuant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                        "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en diminuant l'activité des ostéoblastes",
-                        "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q20",
-                    type: "single",
-                },
-                {
-                    num: "Q21",
-                    text: "La membrane... (plusieurs réponses possibles)",
-                    options: [
-                        "est polarisée par une forte concentration en potassium intracellulaire et de sodium et chlorure extracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
-                        "est polarisée par une forte concentration en potassium extracellulaire et de sodium et chlorure intracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
-                        "Sa dépolarisation est obtenue par une entrée massive de sodium dans la cellule suivie par un légère polarisation par entrée de chlorure",
-                        "Sa dépolarisation est obtenue par une entrée massive de potassium dans la cellule suivie par un légère polarisation par entrée de chlorure",
-                        "La repolarisation continue par une sortie de potassium, tandis que le calcium entre dans la cellule",
-                        "La repolarisation continue par une sortie de calcium, tandis que le sodium entre dans la cellule",
-                    ],
-                    answer: [0, 2, 4],
-                    source: "aout2024",
-                    id: "a24_Q21",
-                    type: "multi",
-                },
-                {
-                    num: "Q22",
-                    text: "Vrai-Faux: la vitamine D est un facteur indispensable pour l'homéostasie du Calcium (-1 si réponse incorrecte / +1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q22",
-                    type: "single",
-                },
-                {
-                    num: "Q23",
-                    text: "Vrai-Faux: Le anti-acides sont indiqués en première intention dans les ulcères à Helicobacter pylori (-1 si réponse incorrecte / +1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q23",
-                    type: "single",
-                },
-                {
-                    num: "Q24",
-                    text: "Vrai-Faux: L'oxyde de titane est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q24",
-                    type: "single",
-                },
-                {
-                    num: "Q25",
-                    text: "Vrai-Faux: L'oxyde de fer est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
-                    options: ["a) Vrai", "Faux"],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q25",
-                    type: "single",
-                },
-                {
-                    num: "Q26",
-                    text: "L'effet indésirables des sels d'aluminium est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Néphrotoxicité",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [2],
-                    source: "aout2024",
-                    id: "a24_Q26",
-                    type: "single",
-                },
-                {
-                    num: "Q27",
-                    text: "L'effet indésirable du fluor est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Cachéxie",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q27",
-                    type: "single",
-                },
-                {
-                    num: "Q28",
-                    text: "L'effet indésirable du potassium est...",
-                    options: [
-                        "Troubles intestinaux",
-                        "Troubles du rythme cardiaque",
-                        "Effet constipant",
-                        "Effet laxatif",
-                        "Distanciation gastrique",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q28",
-                    type: "single",
-                },
-                {
-                    num: "Q29",
-                    text: "Quel est l'antidote du cuivre...",
-                    options: [
-                        "La défériprone",
-                        "Le carbonate de lanthane",
-                        "L'acétate de zinc",
-                        "Le polystyrène sulfonate de sodium",
-                        "L'hydroxycolbalamine",
-                    ],
-                    answer: [2],
-                    source: "aout2024",
-                    id: "a24_Q29",
-                    type: "single",
-                },
-                {
-                    num: "Q30",
-                    text: "Quel est l'antidote du cyanure...",
-                    options: [
-                        "La défériprone",
-                        "Le carbonate de lanthane",
-                        "L'acétate de zinc",
-                        "Le polystyrène sulfonate de sodium",
-                        "L'hydroxycolbalamine",
-                    ],
-                    answer: [4],
-                    source: "aout2024",
-                    id: "a24_Q30",
-                    type: "single",
-                },
-                {
-                    num: "Q31",
-                    text: "Le dosage du KI en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "20 méq",
-                        "3 mL/ 100 mL",
-                        "65 mg",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [3],
-                    source: "aout2024",
-                    id: "a24_Q31",
-                    type: "single",
-                },
-                {
-                    num: "Q32",
-                    text: "Le dosage du carbonate de lithium en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "20 méq",
-                        "3 mL/ 100 mL",
-                        "65 mg",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [5],
-                    source: "aout2024",
-                    id: "a24_Q32",
-                    type: "single",
-                },
-                {
-                    num: "Q33",
-                    text: "Le dosage du calcium élément en thérapeutique est de... (une seule réponse possibl",
-                    options: [
-                        "a) 9 g/1000 mL",
-                        "1000 mg",
-                        "3 mL/ 100 mL",
-                        "800 UI",
-                        "80 mg",
-                        "400 mg",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q33",
-                    type: "single",
-                },
-                {
-                    num: "Q34",
-                    text: "En imagerie, le sulfate de baryum et le gadotéridol sont respectivement utilisés pour...",
-                    options: [
-                        "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
-                        "Le PET Scan et la scintigraphie osseuse",
-                        "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
-                        "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire",
-                    ],
-                    answer: [0],
-                    source: "aout2024",
-                    id: "a24_Q34",
-                    type: "single",
-                },
-                {
-                    num: "Q35",
-                    text: "En imagerie, le 18F-2-fluorodéoxyglucose et l'iode sont respectivement utilisés pour...",
-                    options: [
-                        "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
-                        "Le PET Scan et la radiographie rayon X intravasculaire",
-                        "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
-                        "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire",
-                    ],
-                    answer: [1],
-                    source: "aout2024",
-                    id: "a24_Q35",
-                    type: "single",
-                },
-            ];
-            const FILL_IN_THE_BLANKS = [
-                {
-                    id: "fitb_1",
-                    title: "La vitamine D et le calcium",
-                    text: "La vitamine D joue un rôle important en lien avec le calcium. La vitamine D promeut {0}. En effet, elle {1} l’absorption du calcium au niveau de {2} ; elle augmente l’activité des ostéoblastes et des {3} et {4} la réabsorption tubulaire au niveau rénale.",
-                    words: [
-                        "la synthèse osseuse",
-                        "augmente",
-                        "l’intestin",
-                        "ostéoclastes",
-                        "augmente",
-                    ],
-                    options: [
-                        ["la synthèse osseuse", "la dégradation osseuse"],
-                        ["augmente", "diminue", "bloque"],
-                        ["l’intestin", "l'estomac", "le foie"],
-                        ["ostéoclastes", "ostéocytes", "chondrocytes"],
-                        ["diminue", "augmente", "stabilise"],
-                    ],
-                },
-                {
-                    id: "fitb_2",
-                    title: "Prévention de l’ostéoporose",
-                    text: "Les doses de calcium dans le cadre de la prévention de l’ostéoporose sont entre {0} et {1} sous forme {2}.",
-                    words: ["500 mg", "1,2 g", "de calcium élémentaire"],
-                    options: [
-                        ["500 mg", "1 g", "2 g"],
-                        ["1 g", "1,2 g", "1,5 g"],
-                        [
-                            "de calcium élémentaire",
-                            "de carbonate de calcium",
-                            "de phosphate de calcium",
-                        ],
-                    ],
-                },
-                {
-                    id: "fitb_3",
-                    title: "Contraction musculaire",
-                    text: "Le Calcium joue un rôle important dans la contraction musculaire. En effet, la liaison de Ca+ sur la {0} entraîne un changement de conformation qui déplace légèrement la tropomyosine qui lui est liée, démasquant ainsi les sites de liaison entre les filaments d’{1} et la {2}. On a donc une levée de l’inhibition de cette liaison. Ceci s’accompagne de la libération d’{3} et du phosphate inorganique par la myosine.",
-                    words: ["troponine", "actine", "myosine", "ADP"],
-                    options: [
-                        ["troponine", "tropomyosine", "myosine"],
-                        ["actine", "myosine", "titine"],
-                        ["myosine", "actine", "tubuline"],
-                        ["ADP", "ATP", "AMP"],
-                    ],
-                },
-                {
-                    id: "fitb_4",
-                    title: "Physiologie et recyclage du Fer",
-                    text: "La majorité du fer mobilisé est issu du recyclage des {0} qui ont une demi-vie moyenne de {1} jours. Ils sont captés par la rate, les cellules de kupffer au niveau du foie et par les {2}. Ils sont alors stockés par la {3}, une protéine de 24 sous-unités pour une masse totale de 440 KDa qui est capable de fixer 2.500 atome de Fer (III). C'est sous cette forme que le fer est également stocké dans les {4}. Le fer issu du recyclage est rapidement excrété via la {5} (80 Kda) qui est une globuline qui peut fixer 2 atome de Fer (III). Ce système de recyclage très efficient explique que l'apport journalier en fer est limité à {6} mg/J pour compenser les pertes inévitables de sang.",
-                    words: [
-                        "globules rouges",
-                        "120",
-                        "macrophages",
-                        "ferritine",
-                        "hépatocytes",
-                        "transferrine",
-                        "1-2",
-                    ],
-                    options: [
-                        ["globules rouges", "plaquettes", "globules blancs"],
-                        ["90", "120", "150"],
-                        ["macrophages", "lymphocytes", "neutrophiles"],
-                        ["ferritine", "transferrine", "hémoglobine"],
-                        ["hépatocytes", "néphrons", "entérocytes"],
-                        ["transferrine", "ferritine", "haptoglobine"],
-                        ["1-2", "10-20", "5-10"],
-                    ],
-                },
-                {
-                    id: "fitb_5",
-                    title: "Homéostasie du Calcium",
-                    text: "Le calcium est un cation qui est majoritairement contenu dans {0}. Sa teneur dans le plasma est sous le contrôle de la {1} qui a un effet hypocalcémiant. En effet, cette hormone {2} la réabsorption rénale du calcium et {3} l’activité des ostéoblastes.",
-                    words: ["les os", "calcitonine", "diminue", "augmente"],
-                    options: [
-                        ["les os", "les muscles", "le sang"],
-                        ["calcitonine", "parathormone", "vitamine D"],
-                        ["diminue", "augmente", "bloque"],
-                        ["augmente", "diminue", "bloque"],
-                    ],
-                },
-            ];
-            const MATCHING_EXERCISES = [
-                {
-                    id: "match_1",
-                    title: "Chélateurs et Antidotes",
-                    description:
-                        "Appariez les chélateurs avec leurs substances à neutraliser.",
-                    pairs: [
-                        {
-                            left: "Défériprone",
-                            right: "Fer",
-                        },
-                        {
-                            left: "Carbonate de lanthane",
-                            right: "Phosphate",
-                        },
-                        {
-                            left: "Acétate de zinc",
-                            right: "Cuivre",
-                        },
-                        {
-                            left: "Polystyrène sulfonate de sodium",
-                            right: "Potassium",
-                        },
-                        {
-                            left: "Hydroxocobalamine",
-                            right: "Cyanure",
-                        },
-                    ],
-                },
-                {
-                    id: "match_2",
-                    title: "Principes actifs et Dosages",
-                    description:
-                        "Appariez les principes actifs avec leurs dosages thérapeutiques respectifs.",
-                    pairs: [
-                        {
-                            left: "Carbonate de lithium",
-                            right: "400 mg",
-                        },
-                        {
-                            left: "Chlorure de sodium",
-                            right: "0,9%",
-                        },
-                        {
-                            left: "Gluconate de fer",
-                            right: "80 mg",
-                        },
-                        {
-                            left: "Fluor",
-                            right: "1450 ppm",
-                        },
-                        {
-                            left: "Carbonate de calcium",
-                            right: "1 g",
-                        },
-                    ],
-                },
-                {
-                    id: "match_3",
-                    title: "Néphron et Échangeurs d'électrolytes",
-                    description:
-                        "Appariez les sections du néphron avec l'échangeur qui régule la réabsorption des cations et anions.",
-                    pairs: [
-                        {
-                            left: "Tube proximal",
-                            right: "Contre-transport Na+/H+",
-                        },
-                        {
-                            left: "Anse de Henlé",
-                            right: "Co-transport Na+/K+/2Cl-",
-                        },
-                        {
-                            left: "Tube distal",
-                            right: "Co-transport Na+/Cl-",
-                        },
-                        {
-                            left: "Tube collecteur",
-                            right: "Échangeur sodium/potassium",
-                        },
-                    ],
-                },
-                {
-                    id: "match_4",
-                    title: "Médicaments et Effets indésirables",
-                    description:
-                        "Appariez les médicaments avec leurs effets indésirables caractéristiques.",
-                    pairs: [
-                        {
-                            left: "Sels de magnésium",
-                            right: "Effet laxatif",
-                        },
-                        {
-                            left: "Sels d’aluminium",
-                            right: "Effet constipant",
-                        },
-                        {
-                            left: "Carboplatine",
-                            right: "Néphrotoxicité",
-                        },
-                        {
-                            left: "Bicarbonate de soude",
-                            right: "Distanciation gastrique",
-                        },
-                        {
-                            left: "Sels de fer",
-                            right: "Troubles intestinaux",
-                        },
-                    ],
-                },
-            ];
-
-            // --- APPLICATION STATE ---
-            let currentFilter = "all"; // all, juin2025, aout2024, pva
-            let quizQuestions = []; // Filtered list of items to show
-            let userState = {}; // { id: { selected: [], checked: false, fitb: [], matches: {} } }
-
-            function setFilter(filter) {
-                currentFilter = filter;
-
-                // Update tabs active state
-                document
-                    .querySelectorAll(".filter-tabs .tab")
-                    .forEach((btn) => {
-                        btn.classList.remove("active");
-                    });
-                const index =
-                    filter === "all"
-                        ? 0
-                        : filter === "juin2025"
-                          ? 1
-                          : filter === "aout2024"
-                            ? 2
-                            : 3;
-                document
-                    .querySelectorAll(".filter-tabs .tab")
-                    [index].classList.add("active");
-
-                // Change page title appropriately
-                const titles = {
-                    all: "Toutes les Questions de Chimie Inorganique",
-                    juin2025: "Examen — Session Juin 2025",
-                    aout2024: "Examen — Session Août 2024",
-                    pva: "Exercices d'Appariement et Textes à trous",
-                };
-                document.getElementById("pageTitle").textContent =
-                    titles[filter];
-
-                buildQuizList();
-                renderQuiz();
-            }
-
-            function buildQuizList() {
-                quizQuestions = [];
-
-                if (currentFilter === "all" || currentFilter === "juin2025") {
-                    QUESTIONS_JUIN_2025.forEach((q) =>
-                        quizQuestions.push({
-                            ...q,
-                            type: q.type || "single",
-                            isQcm: true,
-                        }),
-                    );
-                }
-
-                if (currentFilter === "all" || currentFilter === "aout2024") {
-                    QUESTIONS_AOUT_2024.forEach((q) =>
-                        quizQuestions.push({
-                            ...q,
-                            type: q.type || "single",
-                            isQcm: true,
-                        }),
-                    );
-                }
-
-                if (currentFilter === "all" || currentFilter === "pva") {
-                    FILL_IN_THE_BLANKS.forEach((ex) =>
-                        quizQuestions.push({ ...ex, isFitb: true }),
-                    );
-                    MATCHING_EXERCISES.forEach((ex) =>
-                        quizQuestions.push({ ...ex, isMatching: true }),
-                    );
-                }
-            }
-
-            function getInitialState(item) {
-                if (!userState[item.id]) {
-                    if (item.isQcm) {
-                        userState[item.id] = { selected: [], checked: false };
-                    } else if (item.isFitb) {
-                        userState[item.id] = {
-                            fitb: Array(item.options.length).fill(""),
-                            checked: false,
-                        };
-                    } else if (item.isMatching) {
-                        userState[item.id] = { matches: {}, checked: false }; // { leftKey: selectedRightVal }
-                    }
-                }
-                return userState[item.id];
-            }
-
-            function arraysEqualAsSets(a, b) {
-                if (a.length !== b.length) return false;
-                const sa = [...a].sort().join(",");
-                const sb = [...b].sort().join(",");
-                return sa === sb;
-            }
-
-            function renderQuiz() {
-                const root = document.getElementById("quizRoot");
-                root.innerHTML = "";
-
-                if (quizQuestions.length === 0) {
-                    root.innerHTML =
-                        '<div style="text-align:center; padding: 40px; color: var(--text-dim);">Aucun exercice trouvé.</div>';
-                    return;
-                }
-
-                quizQuestions.forEach((item, index) => {
-                    const cardState = getInitialState(item);
-
-                    if (item.isQcm) {
-                        renderQcmCard(item, cardState, index + 1, root);
-                    } else if (item.isFitb) {
-                        renderFitbCard(item, cardState, index + 1, root);
-                    } else if (item.isMatching) {
-                        renderMatchingCard(item, cardState, index + 1, root);
-                    }
-                });
-
-                updateProgress();
-            }
-
-            function renderQcmCard(q, state, indexNum, parent) {
-                const card = document.createElement("div");
-                card.className =
-                    "qcard " + (state.checked ? "answered" : "unanswered");
-
-                if (state.checked) {
-                    const isCorrect = arraysEqualAsSets(
-                        state.selected,
-                        q.answer,
-                    );
-                    card.classList.add(isCorrect ? "correct" : "incorrect");
-                    card.classList.add("locked");
-                }
-
-                const sourceName =
-                    q.source === "juin2025" ? "Juin 2025" : "Août 2024";
-                const numLine = document.createElement("div");
-                numLine.className = "qnum";
-                numLine.innerHTML = `Question ${q.num} (${sourceName}) <span class="qtype">${q.type === "multi" ? "Plusieurs réponses" : "Une seule réponse"}</span>`;
-                card.appendChild(numLine);
-
-                const qtext = document.createElement("div");
-                qtext.className = "qtext";
-                qtext.textContent = q.text;
-                card.appendChild(qtext);
-
-                const optsWrap = document.createElement("div");
-                optsWrap.className = "options";
-
-                q.options.forEach((optText, idx) => {
-                    const opt = document.createElement("div");
-                    opt.className =
-                        "opt " + (q.type === "single" ? "radio" : "checkbox");
-                    const isSelected = state.selected.includes(idx);
-                    if (isSelected) opt.classList.add("selected");
-
-                    if (state.checked) {
-                        const isCorrectOpt = q.answer.includes(idx);
-                        if (isCorrectOpt) opt.classList.add("correct-answer");
-                        if (isSelected && !isCorrectOpt)
-                            opt.classList.add("wrong-selected");
-                    }
-
-                    const letter = String.fromCharCode(97 + idx); // a, b, c...
-                    opt.innerHTML = `<div class="checkbox-indicator">${isSelected ? "✓" : ""}</div><span class="label-text">${letter}) ${optText}</span>`;
-
-                    if (!state.checked) {
-                        opt.addEventListener("click", () => {
-                            if (q.type === "single") {
-                                state.selected = [idx];
-                            } else {
-                                const pos = state.selected.indexOf(idx);
-                                if (pos >= 0) state.selected.splice(pos, 1);
-                                else state.selected.push(idx);
-                            }
-                            renderQuiz();
-                        });
-                    }
-                    optsWrap.appendChild(opt);
-                });
-
-                card.appendChild(optsWrap);
-
-                // Bottom actions
-                const checkRow = document.createElement("div");
-                checkRow.className = "check-row";
-
-                if (!state.checked) {
-                    const btn = document.createElement("button");
-                    btn.className = "btn";
-                    btn.textContent = "Valider la réponse";
-                    btn.disabled = state.selected.length === 0;
-                    btn.addEventListener("click", () => {
-                        state.checked = true;
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(btn);
-                } else {
-                    const isCorrect = arraysEqualAsSets(
-                        state.selected,
-                        q.answer,
-                    );
-                    const tag = document.createElement("div");
-                    tag.className =
-                        "result-tag " + (isCorrect ? "correct" : "incorrect");
-                    tag.innerHTML = isCorrect ? "✓ Correct" : "✗ Incorrect";
-                    checkRow.appendChild(tag);
-
-                    const redoBtn = document.createElement("button");
-                    redoBtn.className = "btn btn-secondary";
-                    redoBtn.textContent = "Recommencer";
-                    redoBtn.addEventListener("click", () => {
-                        state.checked = false;
-                        state.selected = [];
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(redoBtn);
-                }
-
-                card.appendChild(checkRow);
-                parent.appendChild(card);
-            }
-
-            function renderFitbCard(ex, state, indexNum, parent) {
-                const card = document.createElement("div");
-                card.className =
-                    "qcard " + (state.checked ? "answered" : "unanswered");
-
-                let isCorrect = true;
-                if (state.checked) {
-                    for (let i = 0; i < ex.words.length; i++) {
-                        if (state.fitb[i] !== ex.words[i]) {
-                            isCorrect = false;
-                            break;
-                        }
-                    }
-                    card.classList.add(isCorrect ? "correct" : "incorrect");
-                    card.classList.add("locked");
-                }
-
-                const numLine = document.createElement("div");
-                numLine.className = "qnum";
-                numLine.innerHTML = `Texte à trous / PVA <span class="qtype">Complétez le texte</span>`;
-                card.appendChild(numLine);
-
-                const qtext = document.createElement("div");
-                qtext.className = "qtext";
-                qtext.style.fontFamily = "var(--sans)";
-                qtext.style.fontSize = "16px";
-
-                // Construct the text with dropdowns
-                let textTemplate = ex.text;
-
-                // We split by placeholders like {0}, {1}...
-                const parts = textTemplate.split(/(\{\d+\})/);
-
-                parts.forEach((part) => {
-                    const m = part.match(/^\{(\d+)\}$/);
-                    if (m) {
-                        const idx = parseInt(m[1]);
-                        const select = document.createElement("select");
-                        select.className = "fitb-select";
-                        if (state.checked) {
-                            select.disabled = true;
-                            const correctWord = ex.words[idx];
-                            const selectedWord = state.fitb[idx];
-                            if (selectedWord === correctWord) {
-                                select.classList.add("correct");
-                            } else {
-                                select.classList.add("incorrect");
-                            }
-                        }
-
-                        // Default placeholder option
-                        const optPlaceholder = document.createElement("option");
-                        optPlaceholder.value = "";
-                        optPlaceholder.textContent = "...";
-                        select.appendChild(optPlaceholder);
-
-                        // Add all possibilities for this dropdown
-                        ex.options[idx].forEach((optText) => {
-                            const option = document.createElement("option");
-                            option.value = optText;
-                            option.textContent = optText;
-                            if (state.fitb[idx] === optText) {
-                                option.selected = true;
-                            }
-                            select.appendChild(option);
-                        });
-
-                        select.addEventListener("change", (e) => {
-                            state.fitb[idx] = e.target.value;
-                            // Check if all are answered to enable button
-                            renderQuiz();
-                        });
-
-                        qtext.appendChild(select);
-                    } else {
-                        qtext.appendChild(document.createTextNode(part));
-                    }
-                });
-
-                card.appendChild(qtext);
-
-                // Add an answer key below if validated and incorrect
-                if (state.checked && !isCorrect) {
-                    const keyBox = document.createElement("div");
-                    keyBox.className = "fitb-answer-sheet";
-                    keyBox.innerHTML = `<strong>Correction :</strong>`;
-                    const ol = document.createElement("ol");
-                    ex.words.forEach((word, i) => {
-                        const li = document.createElement("li");
-                        li.innerHTML = `Trou ${i + 1} : <span class="corr-val">${word}</span> (votre réponse : <i>${state.fitb[i] || "vide"}</i>)`;
-                        ol.appendChild(li);
-                    });
-                    keyBox.appendChild(ol);
-                    card.appendChild(keyBox);
-                }
-
-                // Bottom actions
-                const checkRow = document.createElement("div");
-                checkRow.className = "check-row";
-
-                if (!state.checked) {
-                    const btn = document.createElement("button");
-                    btn.className = "btn";
-                    btn.textContent = "Valider la réponse";
-                    // Disable if any blank is unanswered
-                    const anyEmpty = state.fitb.some((val) => val === "");
-                    btn.disabled = anyEmpty;
-                    btn.addEventListener("click", () => {
-                        state.checked = true;
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(btn);
-                } else {
-                    const tag = document.createElement("div");
-                    tag.className =
-                        "result-tag " + (isCorrect ? "correct" : "incorrect");
-                    tag.innerHTML = isCorrect ? "✓ Correct" : "✗ Incorrect";
-                    checkRow.appendChild(tag);
-
-                    const redoBtn = document.createElement("button");
-                    redoBtn.className = "btn btn-secondary";
-                    redoBtn.textContent = "Recommencer";
-                    redoBtn.addEventListener("click", () => {
-                        state.checked = false;
-                        state.fitb = Array(ex.options.length).fill("");
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(redoBtn);
-                }
-
-                card.appendChild(checkRow);
-                parent.appendChild(card);
-            }
-
-            function renderMatchingCard(ex, state, indexNum, parent) {
-                const card = document.createElement("div");
-                card.className =
-                    "qcard " + (state.checked ? "answered" : "unanswered");
-
-                let allCorrect = true;
-                if (state.checked) {
-                    ex.pairs.forEach((pair) => {
-                        if (state.matches[pair.left] !== pair.right) {
-                            allCorrect = false;
-                        }
-                    });
-                    card.classList.add(allCorrect ? "correct" : "incorrect");
-                    card.classList.add("locked");
-                }
-
-                const numLine = document.createElement("div");
-                numLine.className = "qnum";
-                numLine.innerHTML = `Exercice d'Appariement / PVA <span class="qtype">Apparier les paires</span>`;
-                card.appendChild(numLine);
-
-                const desc = document.createElement("div");
-                desc.className = "qtext";
-                desc.textContent = ex.description;
-                card.appendChild(desc);
-
-                const matchContainer = document.createElement("div");
-                matchContainer.className = "matching-container";
-
-                // Get all possible right-side choices for dropdown, shuffled or sorted
-                const rightChoices = ex.pairs.map((p) => p.right).sort();
-
-                ex.pairs.forEach((pair) => {
-                    const row = document.createElement("div");
-                    row.className = "matching-row";
-
-                    const leftText = document.createElement("div");
-                    leftText.className = "match-left";
-                    leftText.textContent = pair.left;
-                    row.appendChild(leftText);
-
-                    const rightSide = document.createElement("div");
-                    rightSide.className = "match-right";
-
-                    const select = document.createElement("select");
-                    select.className = "match-select";
-                    if (state.checked) {
-                        select.disabled = true;
-                        const isPairCorrect =
-                            state.matches[pair.left] === pair.right;
-                        select.classList.add(
-                            isPairCorrect ? "correct" : "incorrect",
-                        );
-                        row.classList.add(
-                            isPairCorrect ? "correct" : "incorrect",
-                        );
-                    }
-
-                    const optPlaceholder = document.createElement("option");
-                    optPlaceholder.value = "";
-                    optPlaceholder.textContent =
-                        "-- Choisir la correspondance --";
-                    select.appendChild(optPlaceholder);
-
-                    rightChoices.forEach((choice) => {
-                        const option = document.createElement("option");
-                        option.value = choice;
-                        option.textContent = choice;
-                        if (state.matches[pair.left] === choice) {
-                            option.selected = true;
-                        }
-                        select.appendChild(option);
-                    });
-
-                    select.addEventListener("change", (e) => {
-                        state.matches[pair.left] = e.target.value;
-                        renderQuiz();
-                    });
-
-                    rightSide.appendChild(select);
-
-                    // Show correct text below if checked and incorrect
-                    if (
-                        state.checked &&
-                        state.matches[pair.left] !== pair.right
-                    ) {
-                        const corrText = document.createElement("span");
-                        corrText.className = "match-correct-text";
-                        corrText.innerHTML = `✓ Réponse correcte : <strong>${pair.right}</strong>`;
-                        rightSide.appendChild(corrText);
-                    }
-
-                    row.appendChild(rightSide);
-                    matchContainer.appendChild(row);
-                });
-
-                card.appendChild(matchContainer);
-
-                // Bottom actions
-                const checkRow = document.createElement("div");
-                checkRow.className = "check-row";
-
-                if (!state.checked) {
-                    const btn = document.createElement("button");
-                    btn.className = "btn";
-                    btn.textContent = "Valider la réponse";
-                    // Disable if any element is not matched
-                    const answeredCount = Object.keys(state.matches).filter(
-                        (k) => state.matches[k] !== "",
-                    ).length;
-                    btn.disabled = answeredCount < ex.pairs.length;
-                    btn.addEventListener("click", () => {
-                        state.checked = true;
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(btn);
-                } else {
-                    const tag = document.createElement("div");
-                    tag.className =
-                        "result-tag " + (allCorrect ? "correct" : "incorrect");
-                    tag.innerHTML = allCorrect ? "✓ Correct" : "✗ Incorrect";
-                    checkRow.appendChild(tag);
-
-                    const redoBtn = document.createElement("button");
-                    redoBtn.className = "btn btn-secondary";
-                    redoBtn.textContent = "Recommencer";
-                    redoBtn.addEventListener("click", () => {
-                        state.checked = false;
-                        state.matches = {};
-                        renderQuiz();
-                    });
-                    checkRow.appendChild(redoBtn);
-                }
-
-                card.appendChild(checkRow);
-                parent.appendChild(card);
-            }
-
-            function updateProgress() {
-                const total = quizQuestions.length;
-                let answered = 0;
-                let correct = 0;
-
-                quizQuestions.forEach((item) => {
-                    const state = getInitialState(item);
-                    if (state.checked) {
-                        answered++;
-
-                        // Check correctness
-                        if (item.isQcm) {
-                            if (arraysEqualAsSets(state.selected, item.answer))
-                                correct++;
-                        } else if (item.isFitb) {
-                            let isFitbCorrect = true;
-                            for (let i = 0; i < item.words.length; i++) {
-                                if (state.fitb[i] !== item.words[i]) {
-                                    isFitbCorrect = false;
-                                    break;
-                                }
-                            }
-                            if (isFitbCorrect) correct++;
-                        } else if (item.isMatching) {
-                            let isMatchCorrect = true;
-                            item.pairs.forEach((pair) => {
-                                if (state.matches[pair.left] !== pair.right) {
-                                    isMatchCorrect = false;
-                                }
-                            });
-                            if (isMatchCorrect) correct++;
-                        }
-                    }
-                });
-
-                document.getElementById("progressFill").style.width =
-                    total > 0 ? (answered / total) * 100 + "%" : "0%";
-                document.getElementById("progressLabel").textContent =
-                    answered + " / " + total;
-
-                const banner = document.getElementById("scoreBanner");
-                if (answered === total && total > 0) {
-                    banner.classList.add("show");
-                    document.getElementById("scoreBig").textContent =
-                        correct + " / " + total;
-                    document.getElementById("scoreSub").textContent =
-                        "exercices répondus correctement sur l'ensemble de la sélection";
-                } else {
-                    banner.classList.remove("show");
-                }
-            }
-
-            function resetQuiz() {
-                quizQuestions.forEach((item) => {
-                    userState[item.id] = null;
-                });
-                renderQuiz();
-            }
-
-            // Initial build
-            setFilter("all");
-        </script>
-    </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRM Chimie Inorganique — PHARJ304</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f19;
+    --panel: #131a26;
+    --panel-2: #1c2536;
+    --line: #2d3d54;
+    --teal: #3ddbd9;
+    --teal-dim: #1d7c7a;
+    --amber: #f59e0b;
+    --good: #10b981;
+    --bad: #ef4444;
+    --text: #f3f4f6;
+    --text-dim: #9ca3af;
+    --sans: 'Inter', sans-serif;
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: radial-gradient(circle at 50% 0%, #151e2e 0%, var(--bg) 80%) fixed;
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    padding: 0 0 100px 0;
+  }
+
+  .nav-bar {
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+
+  .nav-logo svg {
+    color: var(--teal);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 15px;
+  }
+
+  .btn-nav {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: var(--mono);
+  }
+
+  .btn-nav:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 10px rgba(61, 219, 217, 0.15);
+  }
+
+  .header {
+    background: rgba(19, 26, 38, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 30px 20px 25px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 28px;
+    margin: 0 0 12px 0;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+  }
+
+  .tab {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .tab:hover {
+    border-color: var(--text-dim);
+    color: var(--text);
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, var(--teal-dim), var(--teal));
+    border-color: var(--teal);
+    color: #0b0f19;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(61, 219, 217, 0.25);
+  }
+
+  .progress-container {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 8px;
+    background: #17212f;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-label {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 30px auto 0;
+    padding: 0 16px;
+  }
+
+  .score-banner {
+    background: linear-gradient(135deg, var(--panel), #162438);
+    border: 1px solid var(--teal-dim);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 25px;
+    display: none;
+    animation: slideDown 0.5s ease-out;
+  }
+
+  @keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .score-banner.show { display: block; }
+  .score-banner .big-score {
+    font-family: var(--serif);
+    font-size: 40px;
+    color: var(--teal);
+    font-weight: 700;
+  }
+
+  .score-banner .sub-score {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  .qcard {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .qcard:hover {
+    border-color: #3f5573;
+  }
+
+  .qcard.unanswered::before {
+    content: ""; position: absolute; left: 0; top: 20px; bottom: 20px; width: 4px;
+    background: var(--amber); border-radius: 0 4px 4px 0;
+  }
+
+  .qcard.answered.correct::before {
+    content: ""; position: absolute; left: 0; top: 20px; bottom: 20px; width: 4px;
+    background: var(--good); border-radius: 0 4px 4px 0;
+  }
+
+  .qcard.answered.incorrect::before {
+    content: ""; position: absolute; left: 0; top: 20px; bottom: 20px; width: 4px;
+    background: var(--bad); border-radius: 0 4px 4px 0;
+  }
+
+  .qnum {
+    font-size: 11px;
+    color: var(--teal);
+    letter-spacing: 0.1em;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .qtype {
+    font-size: 10px;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: var(--sans);
+    font-weight: 500;
+  }
+
+  .qtext {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--text);
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 15px;
+  }
+
+  .opt:hover {
+    border-color: #4a5e7b;
+    background: #222d42;
+  }
+
+  .opt .checkbox-indicator {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    border: 1px solid #5a7192;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--bg);
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .opt.radio .checkbox-indicator {
+    border-radius: 50%;
+  }
+
+  .opt.selected .checkbox-indicator {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 0 8px rgba(61, 219, 217, 0.4);
+  }
+
+  .opt span.label-text {
+    color: var(--text);
+  }
+
+  .qcard.locked .opt {
+    cursor: default;
+  }
+
+  .qcard.locked .opt:hover {
+    background: var(--panel-2);
+    border-color: var(--line);
+  }
+
+  .opt.correct-answer {
+    border-color: var(--good);
+    background: rgba(16, 185, 129, 0.08);
+  }
+  .opt.correct-answer:hover {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: var(--good);
+  }
+
+  .opt.wrong-selected {
+    border-color: var(--bad);
+    background: rgba(239, 68, 68, 0.08);
+  }
+  .opt.wrong-selected:hover {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: var(--bad);
+  }
+
+  .check-row {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: var(--mono);
+    background: linear-gradient(135deg, var(--teal-dim), var(--teal));
+    color: #0b0f19;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(61, 219, 217, 0.3);
+  }
+
+  .btn:disabled {
+    opacity: 0.3;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: rgba(61, 219, 217, 0.05);
+  }
+
+  .result-tag {
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .result-tag.correct { color: var(--good); }
+  .result-tag.incorrect { color: var(--bad); }
+
+  /* Fitb / text à trous specific classes */
+  .fitb-select {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-family: var(--sans);
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    margin: 0 4px;
+    transition: all 0.2s;
+  }
+
+  .fitb-select:focus {
+    border-color: var(--teal);
+  }
+
+  .fitb-select.correct {
+    border-color: var(--good);
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .fitb-select.incorrect {
+    border-color: var(--bad);
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  .fitb-answer-sheet {
+    margin-top: 15px;
+    background: rgba(19, 26, 38, 0.8);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .fitb-answer-sheet ol {
+    margin: 5px 0 0 0;
+    padding-left: 20px;
+    color: var(--text);
+  }
+
+  .fitb-answer-sheet li {
+    margin-bottom: 4px;
+  }
+
+  .fitb-answer-sheet span.corr-val {
+    color: var(--good);
+    font-weight: 500;
+  }
+
+  /* Matching exercises specific styling */
+  .matching-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .matching-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+
+  .matching-row.correct {
+    border-color: var(--good);
+  }
+
+  .matching-row.incorrect {
+    border-color: var(--bad);
+  }
+
+  .match-left {
+    flex: 1;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .match-right {
+    flex: 1;
+  }
+
+  .match-select {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .match-select:focus {
+    border-color: var(--teal);
+  }
+
+  .match-select.correct {
+    border-color: var(--good);
+    color: var(--good);
+    background: rgba(16, 185, 129, 0.05);
+  }
+
+  .match-select.incorrect {
+    border-color: var(--bad);
+    color: var(--bad);
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  .match-correct-text {
+    font-size: 11px;
+    color: var(--good);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* Footer and reset styling */
+  .footer-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(11, 15, 25, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    z-index: 50;
+  }
+
+  /* Scroll bar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3c5270;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <a href="index.html" class="nav-logo">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    PHARJ304
+  </a>
+  <div class="nav-links">
+    <a href="QRM_Radiopharmacie_PHARJ304.html" class="btn-nav">Radiopharmacie →</a>
+  </div>
+</div>
+
+<div class="header">
+  <div class="eyebrow">Chimie Pharmaceutique Inorganique</div>
+  <h1 id="pageTitle">Chimie Inorganique</h1>
+  <div class="meta">Entraînez-vous avec les questions d'examens et les exercices issus du cours de Chimie Inorganique.</div>
+  
+  <div class="filter-tabs">
+    <button class="tab active" onclick="setFilter('all')">Tout mélanger</button>
+    <button class="tab" onclick="setFilter('juin2025')">Session Juin 2025 (35 Q)</button>
+    <button class="tab" onclick="setFilter('aout2024')">Session Août 2024 (35 Q)</button>
+    <button class="tab" onclick="setFilter('annales')">Annales CPI (10 Q)</button>
+    <button class="tab" onclick="setFilter('pva')">Exercices PVA (9 ex)</button>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 0</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="score-banner" id="scoreBanner">
+    <div class="big-score" id="scoreBig">—</div>
+    <div class="sub-score" id="scoreSub">questions complétées correctement</div>
+  </div>
+
+  <div id="quizRoot"></div>
+</div>
+
+<div class="footer-bar">
+  <button class="btn btn-secondary" onclick="resetQuiz()">Réinitialiser le QRM</button>
+</div>
+
+<script>
+// --- DATABASES ---
+// We insert the JS variables directly here
+// Données générées des QRM de Chimie Inorganique
+const QUESTIONS_JUIN_2025 = [
+  {
+    "num": "Q1",
+    "text": "Le carbonate de lithium est... (Une seule réponse possibl",
+    "options": [
+      "a) un thymorégulateur utilisé dans les troubles bipolaires",
+      "un thymorégulateur utilisé dans les troubles anxieux",
+      "un psychostimulant utilisé dans les troubles bipolaires",
+      "un psychosuppresseur utilisé dans les troubles bipolaires",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q1",
+    "type": "single"
+  },
+  {
+    "num": "Q2",
+    "text": "Le magnésium est utilisé en I.V. dans quelle pathologie (Une seule réponse possibl",
+    "options": [
+      "a) La pré-éclampsie",
+      "L'hypermagnésémie",
+      "La déshydratation",
+      "L'ulcère gastrique",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q2",
+    "type": "single"
+  },
+  {
+    "num": "Q3",
+    "text": "Parmi ces composants, lequel n'est pas un anti-acide... (Une seule réponse possibl",
+    "options": [
+      "a) Sous-citrate de Bismuth",
+      "Al(OH)3",
+      "Mg(OH)2",
+      "Carbone de calcium",
+      "Bicarbonate de sodium"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q3",
+    "type": "single"
+  },
+  {
+    "num": "Q4",
+    "text": "Les agents de contraste iodés... (Une seule réponse possibl",
+    "options": [
+      "a) Toutes les réponses sont correctes.",
+      "doivent contenir 50 à 60 % en poids d'iode",
+      "doivent avoir des liaisons iode – composé organique solides afin de prévenir le relâchement d'iode dans l'organisme ou lors de la stérilisation",
+      "pour l'usage IV, les combinaisons doivent être solubles dans l'eau. Elles doivent avoir un effet osmotique minimal",
+      "Les propriétés biopharmaceutiques doivent faire en sorte que le produit arrive très vite à l'organe d'intérêt"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q4",
+    "type": "single"
+  },
+  {
+    "num": "Q5",
+    "text": "L'ulcère ne provient pas... (Une seule réponse possibl",
+    "options": [
+      "a) d'une infection virale",
+      "d'une infection à Helicobacter pylori",
+      "d'usage prolongé des AINS",
+      "du stress",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q5",
+    "type": "single"
+  },
+  {
+    "num": "Q6",
+    "text": "Le carbonate de lithium est... (Une seule réponse possibl",
+    "options": [
+      "a) néphrotoxique et il a une marge thérapeutique étroite.",
+      "néphrotoxique et il a une marge thérapeutique large",
+      "hépatotoxique et il a une marge thérapeutique large",
+      "hépatotoxique et il a une marge thérapeutique étroite",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q6",
+    "type": "single"
+  },
+  {
+    "num": "Q7",
+    "text": "Lequel de ces produits n'est pas un antiseptique? (Une seule réponse possibl",
+    "options": [
+      "a) l'ioversol",
+      "l'iode",
+      "l'acide hypochloreux",
+      "le peroxyde d'hydrogène",
+      "le borax"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q7",
+    "type": "single"
+  },
+  {
+    "num": "Q8",
+    "text": "Lequel de ces ions n'est pas utilisé en thérapeutique... (Une seule réponse possibl",
+    "options": [
+      "a) Le bromure",
+      "Le zinc",
+      "Le phosphate",
+      "Le chlorure"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q8",
+    "type": "single"
+  },
+  {
+    "num": "Q9",
+    "text": "La prise de fer ou de cations divalents en général ne peut se faire avec... (Une seule réponse possibl",
+    "options": [
+      "a) une quinolone car cela va diminuer la biodisponibilité du cation et de la quinolone",
+      "un grand verre d'eau minérale pour éviter le surdosage en cation",
+      "une pénicilline car cela va diminuer la biodisponibilité du cation et de la pénicilline",
+      "du lait car cela va diminuer la biodisponibilité du cation",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q9",
+    "type": "single"
+  },
+  {
+    "num": "Q10",
+    "text": "Le baryum est (Une seule réponse possibl",
+    "options": [
+      "a) Utilisé en intraveineuse pour faire une radiographie",
+      "Est sous forme de sel insoluble dans l'eau à cause de sa toxicité",
+      "Est un cation monovalent",
+      "Se prend par voie orale sous forme de chlorure",
+      "Aucune des réponses sont correctes"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q10",
+    "type": "single"
+  },
+  {
+    "num": "Q11",
+    "text": "Le charbon actif est... (Une seule réponse possibl",
+    "options": [
+      "a) Utilisé en urgence pour favoriser le vomissement",
+      "Est un absorbant qui permet de fixer les toxines bactériennes",
+      "Est un adsorbant qui permet de fixer les bulles de gaz en cas de ballonnements",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "juin2025",
+    "id": "j25_Q11",
+    "type": "single"
+  },
+  {
+    "num": "Q12",
+    "text": "Laquelle de ces propositions est fausse? (Une seule réponse possibl",
+    "options": [
+      "a) Le sodium est un cation monovalent principalement présent dans le liquide extracellulaire",
+      "Le potassium est un cation monovalent principalement présent dans la cellule",
+      "Le calcium est présent dans le liquide extracellulaire ou stocké dans les réticulums sarcoplasmiques",
+      "Le chlorure est un anion monovalent principalement présent dans le liquide extracellulaire",
+      "La répartition homogène des ions de part et d'autre de la membrane cytoplasmique explique la différence de potentiel de – 70 à 90 mV observé sur la membrane"
+    ],
+    "answer": [
+      4
+    ],
+    "source": "juin2025",
+    "id": "j25_Q12",
+    "type": "single"
+  },
+  {
+    "num": "Q13",
+    "text": "Parmi les propositions suivantes laquelle est fausse: (Une seule réponse possibl",
+    "options": [
+      "a) Le platine est un métal",
+      "Le platine est utilisé sous forme de complexe hexacoordonné",
+      "Le platine est un agent intercalant de l'ADN",
+      "Le platine est un agent anti-cancéreux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q13",
+    "type": "single"
+  },
+  {
+    "num": "Q14",
+    "text": "l'échangeur d'électrolyte du Co-transport Na+/Cl- régule la réabsorption des cations et anions au niveau",
+    "options": [
+      "du tube Proximal",
+      "du tube distal",
+      "du tube collecteur",
+      "de l'anse de Henlé"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q14",
+    "type": "single"
+  },
+  {
+    "num": "Q15",
+    "text": "Question sur la physiologie du fer (plusieurs réponses possibles): l'apport journalier en fer chez une personne saine est de...",
+    "options": [
+      "de 1 à 2 mg car il est principalement recyclé à partir des globules rouges",
+      "de 10 à 20 mg car il est principalement recyclé à partir des globules rouges",
+      "de 1 à 2 mg car il est principalement recyclé grâce aux macrophages",
+      "de 10 à 20 mg car il est principalement recyclé grâce aux cellules de Küpfer",
+      "de 1 à 2 mg car il est principalement stocké par la transferrine",
+      "de 10 à 20 mg car il est principalement stocké par la transferrine"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "source": "juin2025",
+    "id": "j25_Q15",
+    "type": "multi"
+  },
+  {
+    "num": "Q16",
+    "text": "Le monoxyde d'azote... (plusieurs réponses possibles)",
+    "options": [
+      "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
+      "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
+      "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
+      "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
+      "est un gaz qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules musculaires lisses",
+      "est un sel qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules endothéliales",
+      "Il augmente la production de GMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
+      "Il augmente la production de AMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
+      "Il est produit par la NO synthase à partir de la citruline et d'oxygène",
+      "Il est produit par la NO synthase à partir de l'arginine et d'oxygène"
+    ],
+    "answer": [
+      1,
+      6,
+      9
+    ],
+    "source": "juin2025",
+    "id": "j25_Q16",
+    "type": "multi"
+  },
+  {
+    "num": "Q17",
+    "text": "La parathormone... (plusieurs réponses possibles)",
+    "options": [
+      "augmente l'absorption du Calcium au niveau intestinal, diminue sa réabsorption rénale et augmente l'activité des ostéoclastes ce qui augmente la calcémie",
+      "augmente l'absorption du Calcium au niveau intestinal, diminue sa réabsorption rénale et augmente l'activité des ostéoclastes ce qui diminue la calcémie",
+      "diminue l'absorption du Calcium au niveau intestinal, augmente sa réabsorption rénale et diminue l'activité des ostéoclastes ce qui augmente la calcémie",
+      "diminue l'absorption du Calcium au niveau intestinal, augmente sa réabsorption rénale et diminue l'activité des ostéoclastes ce qui diminue la calcémie"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q17",
+    "type": "multi"
+  },
+  {
+    "num": "Q18",
+    "text": "La vitamine D favorise la synthèse osseuse... (plusieurs réponses possibles)",
+    "options": [
+      "en augmentant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
+      "en augmentant l'absorption du calcium au niveau intestinal, en diminuant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
+      "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en diminuant l'activité des ostéoblastes",
+      "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q18",
+    "type": "multi"
+  },
+  {
+    "num": "Q19",
+    "text": "La membrane... (plusieurs réponses possibles)",
+    "options": [
+      "est polarisée par une forte concentration en potassium intracellulaire et de sodium et chlorure extracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
+      "est polarisée par une forte concentration en potassium extracellulaire et de sodium et chlorure intracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
+      "Sa dépolarisation est obtenue par une entrée massive de sodium dans la cellule suivie par un légère polarisation par entrée de chlorure",
+      "Sa dépolarisation est obtenue par une entrée massive de potassium dans la cellule suivie par un légère polarisation par entrée de chlorure",
+      "La repolarisation continue par une sortie de potassium, tandis que le calcium entre dans la cellule",
+      "La repolarisation continue par une sortie de calcium, tandis que le sodium entre dans la cellule"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "source": "juin2025",
+    "id": "j25_Q19",
+    "type": "multi"
+  },
+  {
+    "num": "Q20",
+    "text": "La membrane... (plusieurs réponses possibles)",
+    "options": [
+      "la repolarisation par la sortie de potassium et le blocage de l'entrée de sodium conduit à une hyperpolarisation de - 90 mV",
+      "la repolarisation par la sortie de sodium et le blocage de l'entrée de calcium conduit à une hyperpolarisation de - 90 mV",
+      "Afin d'obtenir une repolarisation complète, une pompe Na+/K+/ATP assure la répartition hétérogène des cations de part et d'autre de la membrane",
+      "Afin d'obtenir une repolarisation complète, une pompe Na+/Cl-/ATP assure la répartition hétérogène des cations de part et d'autre de la membrane",
+      "Afin d'obtenir une repolarisation complète, une pompe Na+/K+/ATP assure la répartition homogène des cations de part et d'autre de la membrane"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "source": "juin2025",
+    "id": "j25_Q20",
+    "type": "multi"
+  },
+  {
+    "num": "Q21",
+    "text": "L'oxygène... (plusieurs réponses possibles)",
+    "options": [
+      "est un gaz qui diffuse librement à travers les membranes et qui est transporté par la myoglobine",
+      "est un gaz qui diffuse librement à travers les membranes et qui est transporté par l'hémoglobine",
+      "Il est indispensable à la cellule car il permet à celle-ci de faire le transfert de proton depuis la chaine respiratoire des mitochondries",
+      "Il est indispensable à la cellule car il permet à celle-ci de faire le transfert d'électron depuis la chaine respiratoire des mitochondries",
+      "il est particulièrement bien absorbé par les cellules musculaires qui contiennent de la myoglobine ayant une haute affinité pour ce gaz",
+      "il est particulièrement bien absorbé par les cellules musculaires qui contiennent de l'hémoglobine ayant une haute affinité pour ce gaz"
+    ],
+    "answer": [
+      1,
+      3,
+      4
+    ],
+    "source": "juin2025",
+    "id": "j25_Q21",
+    "type": "multi"
+  },
+  {
+    "num": "Q22",
+    "text": "Vrai-Faux: la vitamine D est un facteur indispensable pour l'homéostasie du Calcium (-1 si réponse incorrecte / +1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q22",
+    "type": "single"
+  },
+  {
+    "num": "Q23",
+    "text": "Vrai-Faux: Le anti-acides sont indiqués en première intention dans les ulcères à Helicobacter pylori (-1 si réponse incorrecte / +1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q23",
+    "type": "single"
+  },
+  {
+    "num": "Q24",
+    "text": "Vrai-Faux: le lithium a le statut de médicament \"no-switch\" car il a une marge thérapeutique étroite (-1 si réponse incorrecte/+1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q24",
+    "type": "single"
+  },
+  {
+    "num": "Q25",
+    "text": "Vrai-Faux: L'oxyde de zinc est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q25",
+    "type": "single"
+  },
+  {
+    "num": "Q26",
+    "text": "L'effet indésirable du bicarbonate de sodium est...",
+    "options": [
+      "Troubles intestinaux",
+      "Néphrotoxicité",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      4
+    ],
+    "source": "juin2025",
+    "id": "j25_Q26",
+    "type": "single"
+  },
+  {
+    "num": "Q27",
+    "text": "L'effet indésirable des sels de fer est...",
+    "options": [
+      "Troubles intestinaux",
+      "Néphrotoxicité",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q27",
+    "type": "single"
+  },
+  {
+    "num": "Q28",
+    "text": "L'effet indésirable du lithium est...",
+    "options": [
+      "Troubles intestinaux",
+      "Néphrotoxicité",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q28",
+    "type": "single"
+  },
+  {
+    "num": "Q29",
+    "text": "Quel est l'antidote du fer...",
+    "options": [
+      "La défériprone",
+      "Le carbonate de lanthane",
+      "L'acétate de zinc",
+      "Le polystyrène sulfonate de sodium",
+      "L'hydroxycolbalamine"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "juin2025",
+    "id": "j25_Q29",
+    "type": "single"
+  },
+  {
+    "num": "Q30",
+    "text": "Quel est l'antidote du phosphate...",
+    "options": [
+      "La défériprone",
+      "Le carbonate de lanthane",
+      "L'acétate de zinc",
+      "Le polystyrène sulfonate de sodium",
+      "L'hydroxycolbalamine"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q30",
+    "type": "single"
+  },
+  {
+    "num": "Q31",
+    "text": "Le dosage du K+ en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "20 méq",
+      "3 mL/ 100 mL",
+      "65 mg",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q31",
+    "type": "single"
+  },
+  {
+    "num": "Q32",
+    "text": "Le dosage du gluconate de fer en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "20 méq",
+      "3 mL/ 100 mL",
+      "65 mg",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      4
+    ],
+    "source": "juin2025",
+    "id": "j25_Q32",
+    "type": "single"
+  },
+  {
+    "num": "Q33",
+    "text": "Le dosage de la vitamine D en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "1000 mg",
+      "3 mL/ 100 mL",
+      "800 UI",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      3
+    ],
+    "source": "juin2025",
+    "id": "j25_Q33",
+    "type": "single"
+  },
+  {
+    "num": "Q34",
+    "text": "En imagerie, l'iode et le gadotéridol sont respectivement utilisés pour...",
+    "options": [
+      "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
+      "Le PET Scan et la scintigraphie osseuse",
+      "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
+      "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire"
+    ],
+    "answer": [
+      3
+    ],
+    "source": "juin2025",
+    "id": "j25_Q34",
+    "type": "single"
+  },
+  {
+    "num": "Q35",
+    "text": "En imagerie, le 18F-2-fluorodéoxyglucose et le 99mTc-diphosphonate sont respectivement utilisés pour...",
+    "options": [
+      "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
+      "Le PET Scan et la scintigraphie osseuse",
+      "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
+      "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "juin2025",
+    "id": "j25_Q35",
+    "type": "single"
+  }
+];
+const QUESTIONS_AOUT_2024 = [
+  {
+    "num": "Q1",
+    "text": "Parmi ces composants, lequel n'est pas un anti-acide... (Une seule réponse possibl",
+    "options": [
+      "a) Sous-citrate de Bismuth",
+      "Al(OH)3",
+      "Mg(OH)2",
+      "Carbonate de calcium",
+      "Bicarbonate de sodium"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q1",
+    "type": "single"
+  },
+  {
+    "num": "Q2",
+    "text": "L'ulcère ne provient pas... (Une seule réponse possibl",
+    "options": [
+      "a) d'une infection virale",
+      "d'une infection à Helicobacter pylori",
+      "d'usage prolongé des AINS",
+      "du stress",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q2",
+    "type": "single"
+  },
+  {
+    "num": "Q3",
+    "text": "Le carbonate de lithium est... (Une seule réponse possibl",
+    "options": [
+      "a) néphrotoxique et il a une marge thérapeutique étroite.",
+      "néphrotoxique et il a une marge thérapeutique large",
+      "hépatotoxique et il a une marge thérapeutique large",
+      "hépatotoxique et il a une marge thérapeutique étroite",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q3",
+    "type": "single"
+  },
+  {
+    "num": "Q4",
+    "text": "Parmi les propositions sur le fluorure laquelle est fausse (Une seule réponse possibl",
+    "options": [
+      "a) une dose de fluor de 1100 ppm est tolérée chez un enfant de 1 an",
+      "une dose de fluor de 1100 ppm est tolérée chez un enfant de 2 ans et plus",
+      "une dose de fluor de 1450 ppm est tolérée chez un enfant de 6 ans et plus",
+      "une dose de fluor de 900 ppm est tolérée chez un enfant de 1 an"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q4",
+    "type": "single"
+  },
+  {
+    "num": "Q5",
+    "text": "Lequel de ces produits n'est pas un antiseptique? (Une seule réponse possibl",
+    "options": [
+      "a) l'ioversol",
+      "l'iode",
+      "l'acide hypochloreux",
+      "le peroxyde d'hydrogène",
+      "le borax"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q5",
+    "type": "single"
+  },
+  {
+    "num": "Q6",
+    "text": "Calcium et ostéoporose: laquelle de ces propositions est fausse (Une seule réponse possibl",
+    "options": [
+      "a) le carbonate de calcium entre 800 et 1200 mg est utilisé en prévention de l'ostéoporose",
+      "Le calcium élémentaire entre 800 et 1200 mg est utilisé en prévention de l'ostéoporose",
+      "Le calcium est utilisé en association avec la Vitamine D car cette dernière favorise son absorption",
+      "Le calcium est utilisé en association avec la Vitamine D car cette dernière favorise son incorporation dans l'os"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q6",
+    "type": "single"
+  },
+  {
+    "num": "Q7",
+    "text": "La prise de fer ou de cations divalents en général ne peut se faire avec... (Une seule réponse possibl",
+    "options": [
+      "a) une quinolone car cela va diminuer la biodisponibilité du cation et de la quinolone",
+      "un grand verre d'eau minérale pour éviter le surdosage en cation",
+      "une pénicilline car cela va diminuer la biodisponibilité du cation et de la pénicilline",
+      "du lait car cela va diminuer la biodisponibilité du cation",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q7",
+    "type": "single"
+  },
+  {
+    "num": "Q8",
+    "text": "L'hyperkaliémie... (Une seule réponse possibl",
+    "options": [
+      "a) provoque une fibrillation cardiaque",
+      "provoque des diarrhées importantes",
+      "provoque des crampes musculaires",
+      "provoque une hypertension artérielle",
+      "Toutes les propositions sont vraies"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q8",
+    "type": "single"
+  },
+  {
+    "num": "Q9",
+    "text": "Le baryum est (Une seule réponse possibl",
+    "options": [
+      "a) Utilisé en intraveineuse pour faire une radiographie",
+      "Est sous forme de sel insoluble dans l'eau à cause de sa toxicité",
+      "Est un cation monovalent",
+      "Se prend par voie orale sous forme de chlorure",
+      "Aucune des réponses sont correctes"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q9",
+    "type": "single"
+  },
+  {
+    "num": "Q10",
+    "text": "Le charbon actif est... (Une seule réponse possibl",
+    "options": [
+      "a) Utilisé en urgence pour favoriser le vomissement",
+      "Est un absorbant qui permet de fixer les toxines bactériennes",
+      "Est un adsorbant qui permet de fixer les bulles de gaz en cas de ballonnements",
+      "Toutes les réponses sont correctes"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "aout2024",
+    "id": "a24_Q10",
+    "type": "single"
+  },
+  {
+    "num": "Q11",
+    "text": "Laquelle de ces propositions est fausse? (Une seule réponse possibl",
+    "options": [
+      "a) Le sodium est un cation monovalent principalement présent dans le liquide extracellulaire",
+      "Le potassium est un cation monovalent principalement présent dans le plasma",
+      "Le calcium est présent dans le liquide extracellulaire ou stocké dans les réticulums sarcoplasmiques",
+      "Le chlorure est un anion monovalent principalement présent dans le liquide extracellulaire",
+      "La répartition hétérogène des ions de part et d'autre de la membrane cytoplasmique explique la différence de potentiel de – 70 à 90 mV observé sur la membrane"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q11",
+    "type": "single"
+  },
+  {
+    "num": "Q12",
+    "text": "Lequel de ces ions n'est pas utilisé en thérapeutique... (Une seule réponse possibl",
+    "options": [
+      "a) Le bromure",
+      "Le sodium",
+      "Le phosphate",
+      "Le fluorure"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q12",
+    "type": "single"
+  },
+  {
+    "num": "Q13",
+    "text": "Parmi les propositions suivantes laquelle est fausse: (Une seule réponse possibl",
+    "options": [
+      "a) Le platine est un métal",
+      "Le platine est utilisé sous forme de complexe hexacoordonné",
+      "Le platine est un agent intercalant de l'ADN",
+      "Le platine est un agent anti-cancéreux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q13",
+    "type": "single"
+  },
+  {
+    "num": "Q14",
+    "text": "l'échangeur d'électrolyte du co-transport Na+/K+/2Cl- régule la réabsorption des cations et anions au niveau",
+    "options": [
+      "du tube Proximal",
+      "du tube distal",
+      "du tube collecteur",
+      "de l'anse de Henlé"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q14",
+    "type": "single"
+  },
+  {
+    "num": "Q15",
+    "text": "Question sur la physiologie du fer (plusieurs réponses possibles): le fer est",
+    "options": [
+      "stocké par la ferritine notamment dans le foie",
+      "transporté par la transferrine dans le sang",
+      "stocké par la transferrine dans la moelle osseuse",
+      "absorbé sous forme héminique et fer (III)",
+      "absorbé sous forme héminique et fer (II)",
+      "transporté par la ferritine dans le sang"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "source": "aout2024",
+    "id": "a24_Q15",
+    "type": "multi"
+  },
+  {
+    "num": "Q16",
+    "text": "Le monoxyde d'azote... (plusieurs réponses possibles)",
+    "options": [
+      "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
+      "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules musculaires lisses",
+      "est un gaz qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
+      "est un sel qui diffuse entre les cellules et qui active la guanylate cyclase des cellules endothéliales",
+      "est un gaz qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules musculaires lisses",
+      "est un sel qui diffuse entre les cellules et qui active l'adénylate cyclase des cellules endothéliales",
+      "Il augmente la production de GMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
+      "Il augmente la production de AMP cyclique dans les cellules cibles et favorise la vasodilatation des vaisseaux",
+      "Il est produit par la NO synthase à partir de la citruline et d'oxygène",
+      "Il est produit par la NO synthase à partir de l'arginine et d'oxygène"
+    ],
+    "answer": [
+      1,
+      6,
+      9
+    ],
+    "source": "aout2024",
+    "id": "a24_Q16",
+    "type": "multi"
+  },
+  {
+    "num": "Q17",
+    "text": "Le calcium... (plusieurs réponses possibles)",
+    "options": [
+      "est un cation divalent de la famille des alcalino-terreux",
+      "est un cation monovalent de la famille des alcalino-terreux",
+      "est un cation divalent de la famille des alcalins",
+      "est un cation monovalent de la famille des alcalins",
+      "Sa teneur dans le plasma est sous le contrôle de la calcitonine qui est hypocalcémiante",
+      "Sa teneur dans le plasma est sous le contrôle de la parathormone qui est hypocalcémiante",
+      "Sa teneur dans le plasma est sous le contrôle de la calcitonine qui est hypercalcémiante",
+      "Sa teneur dans le plasma est sous le contrôle de la parathormone qui est hypocalcémiante"
+    ],
+    "answer": [
+      0,
+      4
+    ],
+    "source": "aout2024",
+    "id": "a24_Q17",
+    "type": "multi"
+  },
+  {
+    "num": "Q18",
+    "text": "La calcitonine... (une seul répons",
+    "options": [
+      "a) diminue la réabsorption rénale du calcium, augmente l'activité des ostéoclastes et diminue l'activité des ostéoblastes ce qui diminue la calcémie",
+      "augmente la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui augmente la calcémie",
+      "augmente la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui augmente la calcémie",
+      "diminue la réabsorption rénale du calcium, diminue l'activité des ostéoclastes et augmente l'activité des ostéoblastes ce qui diminue la calcémie"
+    ],
+    "answer": [
+      3
+    ],
+    "source": "aout2024",
+    "id": "a24_Q18",
+    "type": "single"
+  },
+  {
+    "num": "Q19",
+    "text": "Le calcium... (plusieurs réponses possibles)",
+    "options": [
+      "Il provoque la contraction musculaire en se fixant sur la troponine C et favorisant la fixation de la myosine sur l'actine",
+      "Il provoque la contraction musculaire en se fixant sur la myosine et favorisant la fixation de la troponine C sur l'actine",
+      "Il est majoritairement contenu dans les cellules",
+      "Il est majoritairement contenu dans les os",
+      "il a une faible affinité pour son site de fixation ce qui requiert des fortes concentrations de calcium",
+      "il a une forte affinité pour son site de fixation ce qui requiert des faibles concentrations de calcium"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "source": "aout2024",
+    "id": "a24_Q19",
+    "type": "multi"
+  },
+  {
+    "num": "Q20",
+    "text": "La vitamine D favorise la synthèse osseuse... (une seule répons",
+    "options": [
+      "a) en augmentant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
+      "en augmentant l'absorption du calcium au niveau intestinal, en diminuant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes",
+      "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en augmentant l'activé des ostéoclastes et en diminuant l'activité des ostéoblastes",
+      "en diminuant l'absorption du calcium au niveau intestinal, en augmentant sa réabsorption au niveau rénal, en diminuant l'activé des ostéoclastes et en augmentant l'activité des ostéoblastes"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q20",
+    "type": "single"
+  },
+  {
+    "num": "Q21",
+    "text": "La membrane... (plusieurs réponses possibles)",
+    "options": [
+      "est polarisée par une forte concentration en potassium intracellulaire et de sodium et chlorure extracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
+      "est polarisée par une forte concentration en potassium extracellulaire et de sodium et chlorure intracellulaire ce qui conduit à une différence de potentiel estimée à -70 mV)",
+      "Sa dépolarisation est obtenue par une entrée massive de sodium dans la cellule suivie par un légère polarisation par entrée de chlorure",
+      "Sa dépolarisation est obtenue par une entrée massive de potassium dans la cellule suivie par un légère polarisation par entrée de chlorure",
+      "La repolarisation continue par une sortie de potassium, tandis que le calcium entre dans la cellule",
+      "La repolarisation continue par une sortie de calcium, tandis que le sodium entre dans la cellule"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "source": "aout2024",
+    "id": "a24_Q21",
+    "type": "multi"
+  },
+  {
+    "num": "Q22",
+    "text": "Vrai-Faux: la vitamine D est un facteur indispensable pour l'homéostasie du Calcium (-1 si réponse incorrecte / +1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q22",
+    "type": "single"
+  },
+  {
+    "num": "Q23",
+    "text": "Vrai-Faux: Le anti-acides sont indiqués en première intention dans les ulcères à Helicobacter pylori (-1 si réponse incorrecte / +1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q23",
+    "type": "single"
+  },
+  {
+    "num": "Q24",
+    "text": "Vrai-Faux: L'oxyde de titane est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q24",
+    "type": "single"
+  },
+  {
+    "num": "Q25",
+    "text": "Vrai-Faux: L'oxyde de fer est un cancérigène probable de classe 2B. (-1 si réponse incorrecte/+1 si réponse bonn",
+    "options": [
+      "a) Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q25",
+    "type": "single"
+  },
+  {
+    "num": "Q26",
+    "text": "L'effet indésirables des sels d'aluminium est...",
+    "options": [
+      "Troubles intestinaux",
+      "Néphrotoxicité",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "aout2024",
+    "id": "a24_Q26",
+    "type": "single"
+  },
+  {
+    "num": "Q27",
+    "text": "L'effet indésirable du fluor est...",
+    "options": [
+      "Troubles intestinaux",
+      "Cachéxie",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q27",
+    "type": "single"
+  },
+  {
+    "num": "Q28",
+    "text": "L'effet indésirable du potassium est...",
+    "options": [
+      "Troubles intestinaux",
+      "Troubles du rythme cardiaque",
+      "Effet constipant",
+      "Effet laxatif",
+      "Distanciation gastrique"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q28",
+    "type": "single"
+  },
+  {
+    "num": "Q29",
+    "text": "Quel est l'antidote du cuivre...",
+    "options": [
+      "La défériprone",
+      "Le carbonate de lanthane",
+      "L'acétate de zinc",
+      "Le polystyrène sulfonate de sodium",
+      "L'hydroxycolbalamine"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "aout2024",
+    "id": "a24_Q29",
+    "type": "single"
+  },
+  {
+    "num": "Q30",
+    "text": "Quel est l'antidote du cyanure...",
+    "options": [
+      "La défériprone",
+      "Le carbonate de lanthane",
+      "L'acétate de zinc",
+      "Le polystyrène sulfonate de sodium",
+      "L'hydroxycolbalamine"
+    ],
+    "answer": [
+      4
+    ],
+    "source": "aout2024",
+    "id": "a24_Q30",
+    "type": "single"
+  },
+  {
+    "num": "Q31",
+    "text": "Le dosage du KI en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "20 méq",
+      "3 mL/ 100 mL",
+      "65 mg",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      3
+    ],
+    "source": "aout2024",
+    "id": "a24_Q31",
+    "type": "single"
+  },
+  {
+    "num": "Q32",
+    "text": "Le dosage du carbonate de lithium en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "20 méq",
+      "3 mL/ 100 mL",
+      "65 mg",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      5
+    ],
+    "source": "aout2024",
+    "id": "a24_Q32",
+    "type": "single"
+  },
+  {
+    "num": "Q33",
+    "text": "Le dosage du calcium élément en thérapeutique est de... (une seule réponse possibl",
+    "options": [
+      "a) 9 g/1000 mL",
+      "1000 mg",
+      "3 mL/ 100 mL",
+      "800 UI",
+      "80 mg",
+      "400 mg"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q33",
+    "type": "single"
+  },
+  {
+    "num": "Q34",
+    "text": "En imagerie, le sulfate de baryum et le gadotéridol sont respectivement utilisés pour...",
+    "options": [
+      "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
+      "Le PET Scan et la scintigraphie osseuse",
+      "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
+      "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "aout2024",
+    "id": "a24_Q34",
+    "type": "single"
+  },
+  {
+    "num": "Q35",
+    "text": "En imagerie, le 18F-2-fluorodéoxyglucose et l'iode sont respectivement utilisés pour...",
+    "options": [
+      "La radiographie rayon X des cavités intestinales et la résonance magnétique nucléaire",
+      "Le PET Scan et la radiographie rayon X intravasculaire",
+      "La résonance magnétique nucléaire et la radiographie rayon X des cavités intestinales",
+      "La radiographie rayon X intravasculaire et la résonance magnétique nucléaire"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "aout2024",
+    "id": "a24_Q35",
+    "type": "single"
+  }
+];
+const QUESTIONS_ANNALES_CPI = [
+  {
+    "num": "Q1",
+    "text": "Trouver l’intrus, le carbonate de calcium est utilisé",
+    "options": [
+      "Pour prévenir l’ostéoporose",
+      "Pour traiter l’ostéoporose",
+      "Avec la vitamine E pour améliorer son absorption",
+      "À une dose entre 500 et 1000mg"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "annales",
+    "id": "ann_Q1",
+    "type": "single"
+  },
+  {
+    "num": "Q2",
+    "text": "Laquelle de ces déclarations est fausse ? Le fluor :",
+    "options": [
+      "Forme du fluoroapatite",
+      "A une action bactériostatique",
+      "Est volatil sous forme de H2F",
+      "Minéralise l’émail en fixant le calcium"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "annales",
+    "id": "ann_Q2",
+    "type": "single"
+  },
+  {
+    "num": "Q3",
+    "text": "Lequel de ces produits n’est pas un désinfectant ?",
+    "options": [
+      "H2O2",
+      "HOCl",
+      "Sulfites",
+      "I3-"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "annales",
+    "id": "ann_Q3",
+    "type": "single"
+  },
+  {
+    "num": "Q4",
+    "text": "Comment peut-on prévenir les allergies aux agents de contraste (agent iodé, gadolinium..) ?",
+    "options": [
+      "En prenant un antihistaminique juste avant l’injection",
+      "En prenant 2 à 3 jours avant des glucocorticoïdes",
+      "En l’injectant lentement",
+      "En faisant des séances de désensibilisation quelques mois avant"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q4",
+    "type": "single"
+  },
+  {
+    "num": "Q5",
+    "text": "Lithium : trouver l’intrus",
+    "options": [
+      "Diarrhée",
+      "Dépression",
+      "Néphrotoxicité",
+      "Marge thérapeutique étroite"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q5",
+    "type": "single"
+  },
+  {
+    "num": "Q6",
+    "text": "Vrai ou faux : l'hypokaliémie induit une tachycardie",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q6",
+    "type": "single"
+  },
+  {
+    "num": "Q7",
+    "text": "Vrai ou faux : les sels de réhydratation sont indiqués en cas de fièvre chez le nourrisson",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q7",
+    "type": "single"
+  },
+  {
+    "num": "Q8",
+    "text": "Vrai ou faux : les sels de réhydratation restaurent le taux de magnésium dans le sang",
+    "options": [
+      "Vrai",
+      "Faux"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q8",
+    "type": "single"
+  },
+  {
+    "num": "Q9",
+    "text": "Concernant le fer : quelle proposition est fausse ?",
+    "options": [
+      "La vitamine C complexe le fer pour améliorer son absorption",
+      "Est stocké par la ferritine",
+      "Le fer a une mauvaise biodisponibilité",
+      "Une carence martiale en fer provoque une anémie"
+    ],
+    "answer": [
+      0
+    ],
+    "source": "annales",
+    "id": "ann_Q9",
+    "type": "single"
+  },
+  {
+    "num": "Q10",
+    "text": "Quelle proposition est fausse ?",
+    "options": [
+      "Le cation baryum est toxique",
+      "Le sulfate de baryum est insoluble y compris dans les acides",
+      "Le sulfate de baryum absorbe les rayons X",
+      "Le patient doit manger un régime riche en fibres 2 à 3 jours avant l’intervention"
+    ],
+    "answer": [
+      3
+    ],
+    "source": "annales",
+    "id": "ann_Q10",
+    "type": "single"
+  }
+];
+const FILL_IN_THE_BLANKS = [
+  {
+    "id": "fitb_1",
+    "title": "La vitamine D et le calcium",
+    "text": "La vitamine D joue un rôle important en lien avec le calcium. La vitamine D promeut {0}. En effet, elle {1} l’absorption du calcium au niveau de {2} ; elle augmente l’activité des ostéoblastes et des {3} et {4} la réabsorption tubulaire au niveau rénale.",
+    "words": [
+      "la synthèse osseuse",
+      "augmente",
+      "l’intestin",
+      "ostéoclastes",
+      "augmente"
+    ],
+    "options": [
+      [
+        "la synthèse osseuse",
+        "la dégradation osseuse"
+      ],
+      [
+        "augmente",
+        "diminue",
+        "bloque"
+      ],
+      [
+        "l’intestin",
+        "l'estomac",
+        "le foie"
+      ],
+      [
+        "ostéoclastes",
+        "ostéocytes",
+        "chondrocytes"
+      ],
+      [
+        "diminue",
+        "augmente",
+        "stabilise"
+      ]
+    ]
+  },
+  {
+    "id": "fitb_2",
+    "title": "Prévention de l’ostéoporose",
+    "text": "Les doses de calcium dans le cadre de la prévention de l’ostéoporose sont entre {0} et {1} sous forme {2}.",
+    "words": [
+      "500 mg",
+      "1,2 g",
+      "de calcium élémentaire"
+    ],
+    "options": [
+      [
+        "500 mg",
+        "1 g",
+        "2 g"
+      ],
+      [
+        "1 g",
+        "1,2 g",
+        "1,5 g"
+      ],
+      [
+        "de calcium élémentaire",
+        "de carbonate de calcium",
+        "de phosphate de calcium"
+      ]
+    ]
+  },
+  {
+    "id": "fitb_3",
+    "title": "Contraction musculaire",
+    "text": "Le Calcium joue un rôle important dans la contraction musculaire. En effet, la liaison de Ca+ sur la {0} entraîne un changement de conformation qui déplace légèrement la tropomyosine qui lui est liée, démasquant ainsi les sites de liaison entre les filaments d’{1} et la {2}. On a donc une levée de l’inhibition de cette liaison. Ceci s’accompagne de la libération d’{3} et du phosphate inorganique par la myosine.",
+    "words": [
+      "troponine",
+      "actine",
+      "myosine",
+      "ADP"
+    ],
+    "options": [
+      [
+        "troponine",
+        "tropomyosine",
+        "myosine"
+      ],
+      [
+        "actine",
+        "myosine",
+        "titine"
+      ],
+      [
+        "myosine",
+        "actine",
+        "tubuline"
+      ],
+      [
+        "ADP",
+        "ATP",
+        "AMP"
+      ]
+    ]
+  },
+  {
+    "id": "fitb_4",
+    "title": "Physiologie et recyclage du Fer",
+    "text": "La majorité du fer mobilisé est issu du recyclage des {0} qui ont une demi-vie moyenne de {1} jours. Ils sont captés par la rate, les cellules de kupffer au niveau du foie et par les {2}. Ils sont alors stockés par la {3}, une protéine de 24 sous-unités pour une masse totale de 440 KDa qui est capable de fixer 2.500 atome de Fer (III). C'est sous cette forme que le fer est également stocké dans les {4}. Le fer issu du recyclage est rapidement excrété via la {5} (80 Kda) qui est une globuline qui peut fixer 2 atome de Fer (III). Ce système de recyclage très efficient explique que l'apport journalier en fer est limité à {6} mg/J pour compenser les pertes inévitables de sang.",
+    "words": [
+      "globules rouges",
+      "120",
+      "macrophages",
+      "ferritine",
+      "hépatocytes",
+      "transferrine",
+      "1-2"
+    ],
+    "options": [
+      [
+        "globules rouges",
+        "plaquettes",
+        "globules blancs"
+      ],
+      [
+        "90",
+        "120",
+        "150"
+      ],
+      [
+        "macrophages",
+        "lymphocytes",
+        "neutrophiles"
+      ],
+      [
+        "ferritine",
+        "transferrine",
+        "hémoglobine"
+      ],
+      [
+        "hépatocytes",
+        "néphrons",
+        "entérocytes"
+      ],
+      [
+        "transferrine",
+        "ferritine",
+        "haptoglobine"
+      ],
+      [
+        "1-2",
+        "10-20",
+        "5-10"
+      ]
+    ]
+  },
+  {
+    "id": "fitb_5",
+    "title": "Homéostasie du Calcium",
+    "text": "Le calcium est un cation qui est majoritairement contenu dans {0}. Sa teneur dans le plasma est sous le contrôle de la {1} qui a un effet hypocalcémiant. En effet, cette hormone {2} la réabsorption rénale du calcium et {3} l’activité des ostéoblastes.",
+    "words": [
+      "les os",
+      "calcitonine",
+      "diminue",
+      "augmente"
+    ],
+    "options": [
+      [
+        "les os",
+        "les muscles",
+        "le sang"
+      ],
+      [
+        "calcitonine",
+        "parathormone",
+        "vitamine D"
+      ],
+      [
+        "diminue",
+        "augmente",
+        "bloque"
+      ],
+      [
+        "augmente",
+        "diminue",
+        "bloque"
+      ]
+    ]
+  }
+];
+const MATCHING_EXERCISES = [
+  {
+    "id": "match_1",
+    "title": "Chélateurs et Antidotes",
+    "description": "Appariez les chélateurs avec leurs substances à neutraliser.",
+    "pairs": [
+      {
+        "left": "Défériprone",
+        "right": "Fer"
+      },
+      {
+        "left": "Carbonate de lanthane",
+        "right": "Phosphate"
+      },
+      {
+        "left": "Acétate de zinc",
+        "right": "Cuivre"
+      },
+      {
+        "left": "Polystyrène sulfonate de sodium",
+        "right": "Potassium"
+      },
+      {
+        "left": "Hydroxocobalamine",
+        "right": "Cyanure"
+      }
+    ]
+  },
+  {
+    "id": "match_2",
+    "title": "Principes actifs et Dosages",
+    "description": "Appariez les principes actifs avec leurs dosages thérapeutiques respectifs.",
+    "pairs": [
+      {
+        "left": "Carbonate de lithium",
+        "right": "400 mg"
+      },
+      {
+        "left": "Chlorure de sodium",
+        "right": "0,9%"
+      },
+      {
+        "left": "Gluconate de fer",
+        "right": "80 mg"
+      },
+      {
+        "left": "Fluor",
+        "right": "1450 ppm"
+      },
+      {
+        "left": "Carbonate de calcium",
+        "right": "1 g"
+      }
+    ]
+  },
+  {
+    "id": "match_3",
+    "title": "Néphron et Échangeurs d'électrolytes",
+    "description": "Appariez les sections du néphron avec l'échangeur qui régule la réabsorption des cations et anions.",
+    "pairs": [
+      {
+        "left": "Tube proximal",
+        "right": "Contre-transport Na+/H+"
+      },
+      {
+        "left": "Anse de Henlé",
+        "right": "Co-transport Na+/K+/2Cl-"
+      },
+      {
+        "left": "Tube distal",
+        "right": "Co-transport Na+/Cl-"
+      },
+      {
+        "left": "Tube collecteur",
+        "right": "Échangeur sodium/potassium"
+      }
+    ]
+  },
+  {
+    "id": "match_4",
+    "title": "Médicaments et Effets indésirables",
+    "description": "Appariez les médicaments avec leurs effets indésirables caractéristiques.",
+    "pairs": [
+      {
+        "left": "Sels de magnésium",
+        "right": "Effet laxatif"
+      },
+      {
+        "left": "Sels d’aluminium",
+        "right": "Effet constipant"
+      },
+      {
+        "left": "Carboplatine",
+        "right": "Néphrotoxicité"
+      },
+      {
+        "left": "Bicarbonate de soude",
+        "right": "Distanciation gastrique"
+      },
+      {
+        "left": "Sels de fer",
+        "right": "Troubles intestinaux"
+      }
+    ]
+  }
+];
+
+
+// --- APPLICATION STATE ---
+let currentFilter = 'all'; // all, juin2025, aout2024, pva
+let quizQuestions = []; // Filtered list of items to show
+let userState = {}; // { id: { selected: [], checked: false, fitb: [], matches: {} } }
+
+function setFilter(filter) {
+  currentFilter = filter;
+  
+  // Update tabs active state
+  document.querySelectorAll('.filter-tabs .tab').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const index = filter === 'all' ? 0 : filter === 'juin2025' ? 1 : filter === 'aout2024' ? 2 : filter === 'annales' ? 3 : 4;
+  document.querySelectorAll('.filter-tabs .tab')[index].classList.add('active');
+
+  // Change page title appropriately
+  const titles = {
+    'all': 'Toutes les Questions de Chimie Inorganique',
+    'juin2025': 'Examen — Session Juin 2025',
+    'aout2024': 'Examen — Session Août 2024',
+    'annales': 'Annales supplémentaires',
+    'pva': "Exercices d'Appariement et Textes à trous"
+  };
+  document.getElementById('pageTitle').textContent = titles[filter];
+
+  buildQuizList();
+  renderQuiz();
+}
+
+function buildQuizList() {
+  quizQuestions = [];
+  
+  if (currentFilter === 'all' || currentFilter === 'juin2025') {
+    QUESTIONS_JUIN_2025.forEach(q => quizQuestions.push({...q, type: q.type || 'single', isQcm: true}));
+  }
+  
+  if (currentFilter === 'all' || currentFilter === 'aout2024') {
+    QUESTIONS_AOUT_2024.forEach(q => quizQuestions.push({...q, type: q.type || 'single', isQcm: true}));
+  }
+  
+  if (currentFilter === 'all' || currentFilter === 'annales') {
+    QUESTIONS_ANNALES_CPI.forEach(q => quizQuestions.push({...q, type: q.type || 'single', isQcm: true}));
+  }
+  
+  if (currentFilter === 'all' || currentFilter === 'pva') {
+    FILL_IN_THE_BLANKS.forEach(ex => quizQuestions.push({...ex, isFitb: true}));
+    MATCHING_EXERCISES.forEach(ex => quizQuestions.push({...ex, isMatching: true}));
+  }
+}
+
+function getInitialState(item) {
+  if (!userState[item.id]) {
+    if (item.isQcm) {
+      userState[item.id] = { selected: [], checked: false };
+    } else if (item.isFitb) {
+      userState[item.id] = { fitb: Array(item.options.length).fill(""), checked: false };
+    } else if (item.isMatching) {
+      userState[item.id] = { matches: {}, checked: false }; // { leftKey: selectedRightVal }
+    }
+  }
+  return userState[item.id];
+}
+
+function arraysEqualAsSets(a, b) {
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort().join(",");
+  const sb = [...b].sort().join(",");
+  return sa === sb;
+}
+
+function renderQuiz() {
+  const root = document.getElementById("quizRoot");
+  root.innerHTML = "";
+  
+  if (quizQuestions.length === 0) {
+    root.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-dim);">Aucun exercice trouvé.</div>';
+    return;
+  }
+  
+  quizQuestions.forEach((item, index) => {
+    const cardState = getInitialState(item);
+    
+    if (item.isQcm) {
+      renderQcmCard(item, cardState, index + 1, root);
+    } else if (item.isFitb) {
+      renderFitbCard(item, cardState, index + 1, root);
+    } else if (item.isMatching) {
+      renderMatchingCard(item, cardState, index + 1, root);
+    }
+  });
+  
+  updateProgress();
+}
+
+function renderQcmCard(q, state, indexNum, parent) {
+  const card = document.createElement("div");
+  card.className = "qcard " + (state.checked ? "answered" : "unanswered");
+  
+  if (state.checked) {
+    const isCorrect = arraysEqualAsSets(state.selected, q.answer);
+    card.classList.add(isCorrect ? "correct" : "incorrect");
+    card.classList.add("locked");
+  }
+  
+  const sourceName = q.source === "juin2025" ? "Juin 2025" : q.source === "aout2024" ? "Août 2024" : "Annales";
+  const numLine = document.createElement("div");
+  numLine.className = "qnum";
+  numLine.innerHTML = `Question ${q.num} (${sourceName}) <span class="qtype">${q.type === 'multi' ? 'Plusieurs réponses' : 'Une seule réponse'}</span>`;
+  card.appendChild(numLine);
+  
+  const qtext = document.createElement("div");
+  qtext.className = "qtext";
+  qtext.textContent = q.text;
+  card.appendChild(qtext);
+  
+  const optsWrap = document.createElement("div");
+  optsWrap.className = "options";
+  
+  q.options.forEach((optText, idx) => {
+    const opt = document.createElement("div");
+    opt.className = "opt " + (q.type === 'single' ? 'radio' : 'checkbox');
+    const isSelected = state.selected.includes(idx);
+    if (isSelected) opt.classList.add("selected");
+    
+    if (state.checked) {
+      const isCorrectOpt = q.answer.includes(idx);
+      if (isCorrectOpt) opt.classList.add("correct-answer");
+      if (isSelected && !isCorrectOpt) opt.classList.add("wrong-selected");
+    }
+    
+    const letter = String.fromCharCode(97 + idx); // a, b, c...
+    opt.innerHTML = `<div class="checkbox-indicator">${isSelected ? '✓' : ''}</div><span class="label-text">${letter}) ${optText}</span>`;
+    
+    if (!state.checked) {
+      opt.addEventListener("click", () => {
+        if (q.type === 'single') {
+          state.selected = [idx];
+        } else {
+          const pos = state.selected.indexOf(idx);
+          if (pos >= 0) state.selected.splice(pos, 1);
+          else state.selected.push(idx);
+        }
+        renderQuiz();
+      });
+    }
+    optsWrap.appendChild(opt);
+  });
+  
+  card.appendChild(optsWrap);
+  
+  // Bottom actions
+  const checkRow = document.createElement("div");
+  checkRow.className = "check-row";
+  
+  if (!state.checked) {
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "Valider la réponse";
+    btn.disabled = state.selected.length === 0;
+    btn.addEventListener("click", () => {
+      state.checked = true;
+      renderQuiz();
+    });
+    checkRow.appendChild(btn);
+  } else {
+    const isCorrect = arraysEqualAsSets(state.selected, q.answer);
+    const tag = document.createElement("div");
+    tag.className = "result-tag " + (isCorrect ? "correct" : "incorrect");
+    tag.innerHTML = isCorrect ? "✓ Correct" : "✗ Incorrect";
+    checkRow.appendChild(tag);
+    
+    const redoBtn = document.createElement("button");
+    redoBtn.className = "btn btn-secondary";
+    redoBtn.textContent = "Recommencer";
+    redoBtn.addEventListener("click", () => {
+      state.checked = false;
+      state.selected = [];
+      renderQuiz();
+    });
+    checkRow.appendChild(redoBtn);
+  }
+  
+  card.appendChild(checkRow);
+  parent.appendChild(card);
+}
+
+function renderFitbCard(ex, state, indexNum, parent) {
+  const card = document.createElement("div");
+  card.className = "qcard " + (state.checked ? "answered" : "unanswered");
+  
+  let isCorrect = true;
+  if (state.checked) {
+    for (let i = 0; i < ex.words.length; i++) {
+      if (state.fitb[i] !== ex.words[i]) {
+        isCorrect = false;
+        break;
+      }
+    }
+    card.classList.add(isCorrect ? "correct" : "incorrect");
+    card.classList.add("locked");
+  }
+  
+  const numLine = document.createElement("div");
+  numLine.className = "qnum";
+  numLine.innerHTML = `Texte à trous / PVA <span class="qtype">Complétez le texte</span>`;
+  card.appendChild(numLine);
+  
+  const qtext = document.createElement("div");
+  qtext.className = "qtext";
+  qtext.style.fontFamily = "var(--sans)";
+  qtext.style.fontSize = "16px";
+  
+  // Construct the text with dropdowns
+  let textTemplate = ex.text;
+  
+  // We split by placeholders like {0}, {1}...
+  const parts = textTemplate.split(/(\{\d+\})/);
+  
+  parts.forEach(part => {
+    const m = part.match(/^\{(\d+)\}$/);
+    if (m) {
+      const idx = parseInt(m[1]);
+      const select = document.createElement("select");
+      select.className = "fitb-select";
+      if (state.checked) {
+        select.disabled = true;
+        const correctWord = ex.words[idx];
+        const selectedWord = state.fitb[idx];
+        if (selectedWord === correctWord) {
+          select.classList.add("correct");
+        } else {
+          select.classList.add("incorrect");
+        }
+      }
+      
+      // Default placeholder option
+      const optPlaceholder = document.createElement("option");
+      optPlaceholder.value = "";
+      optPlaceholder.textContent = "...";
+      select.appendChild(optPlaceholder);
+      
+      // Add all possibilities for this dropdown
+      ex.options[idx].forEach(optText => {
+        const option = document.createElement("option");
+        option.value = optText;
+        option.textContent = optText;
+        if (state.fitb[idx] === optText) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      });
+      
+      select.addEventListener("change", (e) => {
+        state.fitb[idx] = e.target.value;
+        // Check if all are answered to enable button
+        renderQuiz();
+      });
+      
+      qtext.appendChild(select);
+    } else {
+      qtext.appendChild(document.createTextNode(part));
+    }
+  });
+  
+  card.appendChild(qtext);
+  
+  // Add an answer key below if validated and incorrect
+  if (state.checked && !isCorrect) {
+    const keyBox = document.createElement("div");
+    keyBox.className = "fitb-answer-sheet";
+    keyBox.innerHTML = `<strong>Correction :</strong>`;
+    const ol = document.createElement("ol");
+    ex.words.forEach((word, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `Trou ${i+1} : <span class="corr-val">${word}</span> (votre réponse : <i>${state.fitb[i] || 'vide'}</i>)`;
+      ol.appendChild(li);
+    });
+    keyBox.appendChild(ol);
+    card.appendChild(keyBox);
+  }
+  
+  // Bottom actions
+  const checkRow = document.createElement("div");
+  checkRow.className = "check-row";
+  
+  if (!state.checked) {
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "Valider la réponse";
+    // Disable if any blank is unanswered
+    const anyEmpty = state.fitb.some(val => val === "");
+    btn.disabled = anyEmpty;
+    btn.addEventListener("click", () => {
+      state.checked = true;
+      renderQuiz();
+    });
+    checkRow.appendChild(btn);
+  } else {
+    const tag = document.createElement("div");
+    tag.className = "result-tag " + (isCorrect ? "correct" : "incorrect");
+    tag.innerHTML = isCorrect ? "✓ Correct" : "✗ Incorrect";
+    checkRow.appendChild(tag);
+    
+    const redoBtn = document.createElement("button");
+    redoBtn.className = "btn btn-secondary";
+    redoBtn.textContent = "Recommencer";
+    redoBtn.addEventListener("click", () => {
+      state.checked = false;
+      state.fitb = Array(ex.options.length).fill("");
+      renderQuiz();
+    });
+    checkRow.appendChild(redoBtn);
+  }
+  
+  card.appendChild(checkRow);
+  parent.appendChild(card);
+}
+
+function renderMatchingCard(ex, state, indexNum, parent) {
+  const card = document.createElement("div");
+  card.className = "qcard " + (state.checked ? "answered" : "unanswered");
+  
+  let allCorrect = true;
+  if (state.checked) {
+    ex.pairs.forEach(pair => {
+      if (state.matches[pair.left] !== pair.right) {
+        allCorrect = false;
+      }
+    });
+    card.classList.add(allCorrect ? "correct" : "incorrect");
+    card.classList.add("locked");
+  }
+  
+  const numLine = document.createElement("div");
+  numLine.className = "qnum";
+  numLine.innerHTML = `Exercice d'Appariement / PVA <span class="qtype">Apparier les paires</span>`;
+  card.appendChild(numLine);
+  
+  const desc = document.createElement("div");
+  desc.className = "qtext";
+  desc.textContent = ex.description;
+  card.appendChild(desc);
+  
+  const matchContainer = document.createElement("div");
+  matchContainer.className = "matching-container";
+  
+  // Get all possible right-side choices for dropdown, shuffled or sorted
+  const rightChoices = ex.pairs.map(p => p.right).sort();
+  
+  ex.pairs.forEach(pair => {
+    const row = document.createElement("div");
+    row.className = "matching-row";
+    
+    const leftText = document.createElement("div");
+    leftText.className = "match-left";
+    leftText.textContent = pair.left;
+    row.appendChild(leftText);
+    
+    const rightSide = document.createElement("div");
+    rightSide.className = "match-right";
+    
+    const select = document.createElement("select");
+    select.className = "match-select";
+    if (state.checked) {
+      select.disabled = true;
+      const isPairCorrect = state.matches[pair.left] === pair.right;
+      select.classList.add(isPairCorrect ? "correct" : "incorrect");
+      row.classList.add(isPairCorrect ? "correct" : "incorrect");
+    }
+    
+    const optPlaceholder = document.createElement("option");
+    optPlaceholder.value = "";
+    optPlaceholder.textContent = "-- Choisir la correspondance --";
+    select.appendChild(optPlaceholder);
+    
+    rightChoices.forEach(choice => {
+      const option = document.createElement("option");
+      option.value = choice;
+      option.textContent = choice;
+      if (state.matches[pair.left] === choice) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    });
+    
+    select.addEventListener("change", (e) => {
+      state.matches[pair.left] = e.target.value;
+      renderQuiz();
+    });
+    
+    rightSide.appendChild(select);
+    
+    // Show correct text below if checked and incorrect
+    if (state.checked && state.matches[pair.left] !== pair.right) {
+      const corrText = document.createElement("span");
+      corrText.className = "match-correct-text";
+      corrText.innerHTML = `✓ Réponse correcte : <strong>${pair.right}</strong>`;
+      rightSide.appendChild(corrText);
+    }
+    
+    row.appendChild(rightSide);
+    matchContainer.appendChild(row);
+  });
+  
+  card.appendChild(matchContainer);
+  
+  // Bottom actions
+  const checkRow = document.createElement("div");
+  checkRow.className = "check-row";
+  
+  if (!state.checked) {
+    const btn = document.createElement("button");
+    btn.className = "btn";
+    btn.textContent = "Valider la réponse";
+    // Disable if any element is not matched
+    const answeredCount = Object.keys(state.matches).filter(k => state.matches[k] !== "").length;
+    btn.disabled = answeredCount < ex.pairs.length;
+    btn.addEventListener("click", () => {
+      state.checked = true;
+      renderQuiz();
+    });
+    checkRow.appendChild(btn);
+  } else {
+    const tag = document.createElement("div");
+    tag.className = "result-tag " + (allCorrect ? "correct" : "incorrect");
+    tag.innerHTML = allCorrect ? "✓ Correct" : "✗ Incorrect";
+    checkRow.appendChild(tag);
+    
+    const redoBtn = document.createElement("button");
+    redoBtn.className = "btn btn-secondary";
+    redoBtn.textContent = "Recommencer";
+    redoBtn.addEventListener("click", () => {
+      state.checked = false;
+      state.matches = {};
+      renderQuiz();
+    });
+    checkRow.appendChild(redoBtn);
+  }
+  
+  card.appendChild(checkRow);
+  parent.appendChild(card);
+}
+
+function updateProgress() {
+  const total = quizQuestions.length;
+  let answered = 0;
+  let correct = 0;
+  
+  quizQuestions.forEach(item => {
+    const state = getInitialState(item);
+    if (state.checked) {
+      answered++;
+      
+      // Check correctness
+      if (item.isQcm) {
+        if (arraysEqualAsSets(state.selected, item.answer)) correct++;
+      } else if (item.isFitb) {
+        let isFitbCorrect = true;
+        for (let i = 0; i < item.words.length; i++) {
+          if (state.fitb[i] !== item.words[i]) {
+            isFitbCorrect = false; break;
+          }
+        }
+        if (isFitbCorrect) correct++;
+      } else if (item.isMatching) {
+        let isMatchCorrect = true;
+        item.pairs.forEach(pair => {
+          if (state.matches[pair.left] !== pair.right) {
+            isMatchCorrect = false;
+          }
+        });
+        if (isMatchCorrect) correct++;
+      }
+    }
+  });
+  
+  document.getElementById("progressFill").style.width = total > 0 ? ((answered / total) * 100) + "%" : "0%";
+  document.getElementById("progressLabel").textContent = answered + " / " + total;
+  
+  const banner = document.getElementById("scoreBanner");
+  if (answered === total && total > 0) {
+    banner.classList.add("show");
+    document.getElementById("scoreBig").textContent = correct + " / " + total;
+    document.getElementById("scoreSub").textContent = "exercices répondus correctement sur l'ensemble de la sélection";
+  } else {
+    banner.classList.remove("show");
+  }
+}
+
+function resetQuiz() {
+  quizQuestions.forEach(item => {
+    userState[item.id] = null;
+  });
+  renderQuiz();
+}
+
+// Initial build
+setFilter('all');
+</script>
+
+</body>
 </html>
