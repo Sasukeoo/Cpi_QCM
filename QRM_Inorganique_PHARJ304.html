@@ -607,7 +607,7 @@
     <button class="tab active" onclick="setFilter('all')">Tout mélanger</button>
     <button class="tab" onclick="setFilter('juin2025')">Session Juin 2025 (35 Q)</button>
     <button class="tab" onclick="setFilter('aout2024')">Session Août 2024 (35 Q)</button>
-    <button class="tab" onclick="setFilter('annales')">Annales CPI (10 Q)</button>
+    <button class="tab" onclick="setFilter('annales')">Annales CPI (15 Q)</button>
     <button class="tab" onclick="setFilter('pva')">Exercices PVA (9 ex)</button>
   </div>
 
@@ -1457,7 +1457,7 @@ const QUESTIONS_AOUT_2024 = [
       "de l'anse de Henlé"
     ],
     "answer": [
-      1
+      3
     ],
     "source": "aout2024",
     "id": "a24_Q14",
@@ -1476,7 +1476,8 @@ const QUESTIONS_AOUT_2024 = [
     ],
     "answer": [
       0,
-      2
+      1,
+      4
     ],
     "source": "aout2024",
     "id": "a24_Q15",
@@ -1981,6 +1982,70 @@ const QUESTIONS_ANNALES_CPI = [
     "source": "annales",
     "id": "ann_Q10",
     "type": "single"
+  },
+  {
+    "num": "Q11",
+    "text": "Quelle proposition est fausse? Les agents de contraste iodes doivent répondre aux propriétés suivantes :",
+    "options": [
+      "faire 5 à 10 % de la masse de la molécule",
+      "avoir un lien covalent fort entre l'iode et la partie organique",
+      "ils doivent avoir une faible osmolalité",
+      "Ils doivent être injectés de telle manière qu'ils arrivent le plus rapidement possible sur l'organe qui fait l'objet de l'analyse radiologique."
+    ],
+    "answer": [
+      0
+    ],
+    "source": "annales",
+    "id": "ann_Q11",
+    "type": "single"
+  },
+  {
+    "num": "Q12",
+    "text": "Quelle proposition est fausse, le gadolinium est sous forme de complexe soluble",
+    "options": [
+      "pour diminuer la toxicité du gadolinium",
+      "pour cibler les compartiments/tissus à analyser",
+      "pour augmenter l'activité du gadolinium",
+      "pour améliorer l'élimination du produit"
+    ],
+    "answer": [
+      2
+    ],
+    "source": "annales",
+    "id": "ann_Q12",
+    "type": "single"
+  },
+  {
+    "num": "Q13",
+    "text": "Quelle proposition est fausse?",
+    "options": [
+      "L'iode entre dans la composition des hormones thyroidiennes",
+      "Une déficience en iode est fréquente en Belgique",
+      "La déficience en iode provoque une hypothyroidie",
+      "L'iodure de potassium prévient les complications suite à un accident nucléaire"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q13",
+    "type": "single"
+  },
+  {
+    "num": "Q14",
+    "text": "Trouver la réponse fausse: les solutions salines...",
+    "options": [
+      "sont la première intention en cas de rhinorrhée d'origine virale",
+      "agissent par effet osmotique uniquement",
+      "sont composées uniquement de NaCl",
+      "sont en vente libre dans les officines"
+    ],
+    "answer": [
+      1
+    ],
+    "source": "annales",
+    "id": "ann_Q14",
+    "type": "single"
   }
 ];
 const FILL_IN_THE_BLANKS = [
@@ -2271,6 +2336,34 @@ const MATCHING_EXERCISES = [
         "right": "Troubles intestinaux"
       }
     ]
+  },
+  {
+    "id": "match_5",
+    "title": "Éléments et Indications",
+    "description": "Appariez l’élément chimique avec son indication clinique ou diagnostique.",
+    "source": "annales",
+    "pairs": [
+      {
+        "left": "ZnO",
+        "right": "Agent desséchant"
+      },
+      {
+        "left": "TiO2",
+        "right": "Filtre solaire"
+      },
+      {
+        "left": "Platine",
+        "right": "Anticancéreux sous forme de complexe"
+      },
+      {
+        "left": "Gadolinium",
+        "right": "Agent de contraste IRM"
+      },
+      {
+        "left": "BaSO4",
+        "right": "Agent de contraste Rx"
+      }
+    ]
   }
 ];
 
@@ -2317,11 +2410,20 @@ function buildQuizList() {
   
   if (currentFilter === 'all' || currentFilter === 'annales') {
     QUESTIONS_ANNALES_CPI.forEach(q => quizQuestions.push({...q, type: q.type || 'single', isQcm: true}));
+    MATCHING_EXERCISES.forEach(ex => {
+      if (ex.source === "annales") {
+        quizQuestions.push({...ex, isMatching: true});
+      }
+    });
   }
   
   if (currentFilter === 'all' || currentFilter === 'pva') {
     FILL_IN_THE_BLANKS.forEach(ex => quizQuestions.push({...ex, isFitb: true}));
-    MATCHING_EXERCISES.forEach(ex => quizQuestions.push({...ex, isMatching: true}));
+    MATCHING_EXERCISES.forEach(ex => {
+      if (ex.source !== "annales") {
+        quizQuestions.push({...ex, isMatching: true});
+      }
+    });
   }
 }
 
